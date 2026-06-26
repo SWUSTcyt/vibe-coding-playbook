@@ -1,7 +1,0 @@
-feat: vibe-coding-playbook 初始化
-
-AI 编程方法论落地仓库，包含：
-- 七个核心流程 Skill（plan-spec / plan-breakdown / execute-implement / verify-test / verify-review / observe-session / improve-retro）
-- 跨工具入口 AGENTS.md（Cursor / Claude Code / Codex 通用）
-- 方法论文档、模板、示例、同步脚本
-- Claude Code subagent 配置（9 个 agent）
