@@ -16,3 +16,6 @@ venv/
 
 # 工具本地配置（不跨机器同步）
 .claude/settings.local.json
+
+# 临时文件
+commit-msg.txt
