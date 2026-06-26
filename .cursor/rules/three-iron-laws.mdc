@@ -1,0 +1,23 @@
+---
+description: AI 编程方法论三条铁律 + 五层闭环（始终生效）
+alwaysApply: true
+---
+
+# 三条铁律（不可回调）
+
+1. **标准前置，不可回调** — 验收标准定义在写代码之前，中途绝不降低。做不完就拆任务，不降标准。
+2. **信息触手可及，而非全部塞入** — 按 `CONTEXT_INDEX.md` 索引按需读取，不一次性灌入全部上下文。
+3. **任务足够小，流程足够固化** — 大任务必拆分，重复流程必封装为 Skill。
+
+# 五层闭环
+
+Plan（规划）→ Execute（执行）→ Verify（验证）→ Observe（观测）→ Improve（改进）→ 回到 Plan。
+
+# 默认行为
+
+- 启动先读 `PLAN.md`（项目状态唯一真源，≤500 tokens）与 `AGENTS.md`。
+- 按阶段调用 `skills/` 下的 skill（plan-spec / plan-breakdown / execute-implement / verify-test / verify-review / observe-session / improve-retro）。
+- 验收按 P0-P3 分级；P0 无法满足时停止并上报，不自行降级。
+- 测试三层：单元（≥80%）+ 功能（≥1 正常 +1 异常）+ Examples。
+- 注释中文 UTF-8 避免乱码；优先 async/await；完善错误处理；改既有函数先理解原逻辑再改。
+- 方法论唯一真源：`docs/AI 编程方法论 v1.2 — 可操作版.md`。

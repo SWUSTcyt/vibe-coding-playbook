@@ -1,0 +1,18 @@
+# 第三方参考 skill（vendored，含各自 .git，仅供借鉴，不纳入版本管理）
+reference/vendored-skills/
+reference/*.log
+
+# Python
+__pycache__/
+*.pyc
+
+# 环境
+.env
+.venv/
+venv/
+
+# 编辑器
+.DS_Store
+
+# 工具本地配置（不跨机器同步）
+.claude/settings.local.json
