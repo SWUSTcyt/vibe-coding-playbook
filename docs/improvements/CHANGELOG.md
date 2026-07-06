@@ -13,6 +13,36 @@
 
 ---
 
+### 2026-07-06 基于 Superpowers v6.1.1 直接对比，增量优化核心 skills（字段级）
+
+- **层：** Improve / Verify / Execute
+- **现象：** 之前对 superpowers 的借鉴停留在 v6.0.x（2026-06-19 clone），未直接对比 v6.1.1，存在版本混淆风险
+- **根因：** 缺「直接对比」证据链；仅依赖公开信息做间接推断
+- **改进动作：**
+  - 临时 clone `superpowers@6.1.1` 到 `reference/vendored-skills/superpowers@6.1.1/`，与 `superpowers/`（v6.0.x）做关键文件 diff
+  - `verify-review`：输出升级为 Review Packet + 证据引用；补充单审查员双裁决
+  - `execute-implement`：新增「子代理 dispatch 契约」（model 声明 + 审查边界 + 禁止指示忽略问题）；任务台账路径对齐 v6.1.1
+  - `verify-test`：细化 P0 E2E 硬规则与 blocked 判定；新增「把 L1 冒烟当功能验证 → 假绿灯」
+  - `SKILL-writing-guide`：补「形式匹配失败类型」可执行样例；头部明确参考基线与直接对比结论
+  - 同步：执行 `scripts/sync-skills.py`，`.cursor/skills/`、`.claude/skills/` 与 `skills/` diff=0
+- **产出：** 更新后的 `skills/verify-review`、`skills/execute-implement`、`skills/verify-test`、`reference/SKILL-writing-guide.md`；新增执行版计划 `docs/plans/skills-6x-optimization-plan.md`
+
+---
+
+### 2026-07-06 添加 Superpowers v6.X 深度分析文章
+
+- **层：** Improve
+- **现象：** 缺乏对主流 AI 编码技能框架（Superpowers）的深度分析，无法借鉴其优化经验
+- **根因：** 未系统调研和分析外部优秀框架的演进策略
+- **改进动作：**
+  - 调研 obra/superpowers 框架的公开信息（GitHub、博客、技术文档）
+  - 分析 v6.X 版本的核心改进：性能优化（50% 更快、60% 更便宜）、Vendor-Neutral 重写、Worktree 本地化等
+  - 提取可移植到自定义 SKILL.md 工作流的改进建议：合并审查阶段、预烘焙 Review Packet、任务粒度标准化等
+  - 创建深度分析文章 `docs/superpowers-v6-analysis.md`
+- **产出：** 新文档 `docs/superpowers-v6-analysis.md`，包含 6 个可移植改进建议和实施路线图
+
+---
+
 ### 2026-06-19 M4 试点项目验证（旅游助手前端现代化）& 验收硬规则回填
 
 - **层：** Execute / Verify / Improve

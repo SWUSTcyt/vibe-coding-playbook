@@ -1,7 +1,8 @@
 # SKILL.md 写作规范小抄
 
 > M0 产出。提炼自三份权威来源 + 优秀样例，供 M2 自研五层 skill 时统一风格。
-> 来源：Anthropic `skill-creator`、superpowers `writing-skills`、Cursor 内置 `create-skill`；
+> 来源：Anthropic `skill-creator`、superpowers `writing-skills`、Cursor 内置 `create-skill`；  
+> 参考基线：`reference/vendored-skills/superpowers/`（v6.0.x），已与 `superpowers@6.1.1` 直接对比并做增量优化。
 > 样例：`brainstorming`、`writing-plans`、`test-driven-development`。
 
 ---
@@ -70,6 +71,12 @@ description: Use when ...      # ≤1024 字符（建议 <500），第三人称
 | 照做但输出形状错（冗长/重点埋没） | 正向配方/契约：直接规定输出「是什么、含哪些部分、顺序」 | 禁令清单（"别 restate"） |
 | 漏掉本该产出的必填项 | 结构化：模板里设 REQUIRED 字段/槽位 | 模板旁的散文提醒 |
 | 行为应依条件而定 | 基于可观察谓词的条件句（"若 X 存在则…"） | 无条件规则 + 例外条款 |
+
+**可执行样例（最小句式）**  
+- 压力下违反规则：`禁止跳过 verify-review；若跳过则必须在 PR 说明写明原因并给出补偿步骤。`  
+- 输出形状错：`输出必须为 Review Packet：结论 / P0 / P1 / 必须修改 / 证据引用（至少一条）。`  
+- 漏必填项：`测试计划模板中「预期结果」为 REQUIRED，缺失则退回。`  
+- 条件行为：`若缺密钥无法 E2E，则该项标 blocked 并写明替代验证与解除条件。`
 
 ## 5. 跨工具落地路径（本项目核心诉求）
 
