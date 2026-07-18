@@ -53,6 +53,21 @@ assert resp.json()["name"] == "test"
 # 可选：检查数据库
 ```
 
+**可消费性验收项**（对外交付的服务额外检查）：
+
+```python
+# 1. 健康检查：不依赖任何业务模块（不调 flow / 不访问数据库）
+resp = client.get("/health")
+assert resp.status_code == 200
+
+# 2. 错误码语义：传错字段应得 4xx（调用方的错），而非 500
+resp = client.post("/v1/xxx", json={})  # 缺必填字段
+assert 400 <= resp.status_code < 500
+
+# 3. 契约校验：响应字段与 Spec 中声明的契约一致
+# 4. 自动文档可访问（如 /docs），版本前缀存在（如 /v1/...）
+```
+
 ### AI Agent（LangChain / MCP / 工具调用）
 
 ```python

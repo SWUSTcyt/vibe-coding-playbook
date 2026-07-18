@@ -14,6 +14,7 @@
 | 总览 & 铁律 & 速览表 | `README.md` |
 | 跨工具入口（铁律+五层+skill 指引） | `AGENTS.md` |
 | SKILL.md 写作规范 | `reference/SKILL-writing-guide.md` |
+| 服务化重构参考（契约/分层/关注点剥离） | `reference/service-refactor-guide.md` |
 | 参考用第三方 skill | `reference/vendored-skills/`（vendored，仅借鉴） |
 
 ## 模板
