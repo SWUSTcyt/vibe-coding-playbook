@@ -115,6 +115,7 @@ python scripts/sync-skills.py --project /path/to/your-project
 
 | 版本 | 主要内容 |
 |---|---|
+| [v0.4.0](https://github.com/SWUSTcyt/vibe-coding-playbook/releases/tag/v0.4.0) | 安装闭环修复（`--install` + 内容哈希校验）+ Spec 治理瘦身（四态生命周期、前置 Spec 地图、可选 AC 追踪、外部写操作授权） |
 | [v0.3.0](https://github.com/SWUSTcyt/vibe-coding-playbook/releases/tag/v0.3.0) | 融入服务化封装与工程骨架管理原则（接口契约前置、关注点剥离重构、密钥/分层/封装边界纪律、可消费性验收，框架无关） |
 | [v0.2.0](https://github.com/SWUSTcyt/vibe-coding-playbook/releases/tag/v0.2.0) | 基于 Superpowers v6.1.1 直接对比的增量优化（Review Packet + 证据引用、子代理 dispatch 契约、P0 E2E 硬规则与 blocked 判定） |
 
