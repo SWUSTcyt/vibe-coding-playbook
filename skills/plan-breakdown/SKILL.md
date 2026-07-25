@@ -25,7 +25,8 @@ description: 任务归约拆分与验收标准前置。Use when 已有 Spec 或�
 2. **拆 Milestone** — 选第一个 Epic，拆出 Milestone，每个含：起始条件、交付物、验收标准。只细化前 1-2 个。用 `templates/milestone-template.md`。
 3. **拆 Issue** — 选第一个 Milestone，拆到 Issue 级别。每个 Issue 含：任务描述、输入/输出、依赖条件、P0-P3 验收标准。用 `templates/issue-template.md`。
 4. **写验收标准（前置）** — 拆 Issue 的同时按 P0-P3 分级写验收标准（见下表），让用户确认/调整。
-5. **维护 Plan Document** — 把当前 Milestone 与 Issue 状态写入 `PLAN.md`（≤500 tokens），用 `templates/plan-document-template.md`。
+5. **维护 Plan Document** — 把当前 Milestone 与 Issue 状态写入 `PLAN.md`（≤500 tokens），用 `templates/plan-document-template.md`。PLAN 只挂**活跃**的 Issue 与 Spec 链接；需求全貌与历史在 `docs/spec/`（索引见 `docs/spec/INDEX.md`），不要让 PLAN 承担 Spec 目录职责。
+6. **确认 Spec 已 Frozen** — 拆分依据的 Spec 应处于 Frozen 状态；仍是 Draft 时先回 plan-spec 定稿，避免边拆边改。
 
 ## Issue 粒度黄金法则
 
@@ -54,7 +55,7 @@ description: 任务归约拆分与验收标准前置。Use when 已有 Spec 或�
 
 - Epic / Milestone 列表（Milestone 用模板）
 - Issue 列表（每个带 P0-P3 验收标准，用模板）
-- `PLAN.md`（≤500 tokens 的项目唯一真源）
+- `PLAN.md`（≤500 tokens，**当前运行状态**唯一真源）
 
 ## 提示词参考
 

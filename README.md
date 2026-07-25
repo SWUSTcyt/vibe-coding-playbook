@@ -58,28 +58,28 @@ git clone https://github.com/<your-username>/vibe-coding-playbook.git
 
 ### 安装 Skill 到你的项目
 
-把 playbook 的七个核心 Skill 安装到任意项目（以 Cursor + Claude Code 为例）：
-
 ```bash
 cd vibe-coding-playbook
-
-# 方式一：使用同步脚本（推荐）
-python scripts/sync-skills.py --project /path/to/your-project
-
-# 方式二：手动复制（Cursor）
-cp -r skills/* /path/to/your-project/.cursor/skills/
-
-# 方式二：手动复制（Claude Code）
-cp -r skills/* /path/to/your-project/.claude/skills/
+python scripts/sync-skills.py --install /path/to/your-project
 ```
 
-同时将 `AGENTS.md` 复制到项目根目录：
+一条命令装齐三样东西（缺一会断链）：
+
+| 装什么 | 装到哪 | 说明 |
+|---|---|---|
+| 七个核心 Skill | `<项目>/.cursor/skills/`、`<项目>/.claude/skills/` | Cursor 与 Claude Code 各一份 |
+| Skill 引用的模板 | `<项目>/templates/` | Skill 正文按 `templates/xxx.md` 引用，不装会断链 |
+| `AGENTS.md` | `<项目>/AGENTS.md` | 已存在则跳过；要覆盖加 `--force-agents` |
+
+装完校验一次：
 
 ```bash
-cp AGENTS.md /path/to/your-project/AGENTS.md
+python scripts/sync-skills.py --install /path/to/your-project --check
 ```
 
-> 复制 `AGENTS.md` 时，按项目实际情况修改「Skill 调用指引」表格，
+该命令按内容哈希比对 Skill，并扫描 Skill 引用的模板是否齐全，有问题返回非 0。
+
+> 装好后按项目实际情况修改 `AGENTS.md` 的「Skill 调用指引」表格，
 > 如有项目级 Skill（如 `understand`、`feature`），补充到表中。
 
 ### 在项目中使用
@@ -93,16 +93,23 @@ cp AGENTS.md /path/to/your-project/AGENTS.md
 ### 保持 Skill 同步
 
 ```bash
-# playbook 自身更新后，同步到 .cursor/skills/ 和 .claude/skills/
+# playbook 自身：skills/ 真源 -> 本仓库 .cursor/skills/ 和 .claude/skills/
 python scripts/sync-skills.py
-
-# 同步到某个项目的 Skill
-python scripts/sync-skills.py --project /path/to/your-project
-
-# 仅检查差异（不写入）
 python scripts/sync-skills.py --check
-python scripts/sync-skills.py --check --project /path/to/your-project
+
+# playbook 升级后，重新装到项目（幂等，会修复漂移与缺失）
+python scripts/sync-skills.py --install /path/to/your-project
+
+# 项目内同步：把项目自己的 .claude/skills/ 同步到 .cursor/skills/
+# 注意这不是安装，不会从本仓库取 Skill，也不分发模板
+python scripts/sync-skills.py --project /path/to/your-project
 ```
+
+| 模式 | 源 | 用途 |
+|---|---|---|
+| 默认 | 本仓库 `skills/` | 维护 playbook 自身的工具副本 |
+| `--install` | 本仓库 `skills/` + `templates/` | **安装到你的项目**（推荐） |
+| `--project` | 项目自己的 `.claude/skills/` | 项目内两个工具目录互相对齐 |
 
 ## 版本历史
 

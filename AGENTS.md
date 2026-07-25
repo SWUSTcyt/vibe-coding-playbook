@@ -34,7 +34,7 @@ Plan（规划）→ Execute（执行）→ Verify（验证）→ Observe（观�
 ## 关键约定
 
 - **唯一真源（方法论）**：`docs/AI 编程方法论 v1.2 — 可操作版.md`（人读完整版）。
-- **项目状态唯一真源**：`PLAN.md`（≤500 tokens），Agent 启动先读。
+- **当前运行状态唯一真源**：`PLAN.md`（≤500 tokens），Agent 启动先读。只写当前 Milestone 与活跃 Issue/Spec 链接；需求全貌与历史归 `docs/spec/`（见 `docs/spec/INDEX.md`），不要把 Spec 目录塞进 PLAN。
 - **验收分级**：P0（阻塞必修）/ P1（本次必修）/ P2（后续 PR）/ P3（可忽略）。
 - **测试三层**：单元（覆盖率 ≥80%）+ 功能（≥1 正常 +1 异常）+ Examples（2-3 个）。
 - **本地/单人**：GitHub Issues/PR/CI 退化为 `PLAN.md` + 本地分支 + 本地测试脚本，质量标准不变。

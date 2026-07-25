@@ -1,10 +1,19 @@
 # Plan Document: [Milestone 名称]
 
-> 约束：< 500 tokens。只写当前 Milestone，不写全局。
+> 约束：< 500 tokens。这是**当前运行状态**的唯一真源，只写当前 Milestone 与活跃项。
+> 需求全貌、历史版本、已完成 Milestone 归 `docs/spec/`（索引 `docs/spec/INDEX.md`），不要往这里堆。
 
 ## 目标
 
 <!-- 一句话 -->
+
+## 活跃 Spec
+
+<!-- 只列本 Milestone 涉及的 Spec（须为 Frozen），全量目录见 docs/spec/INDEX.md -->
+
+| Spec ID | 状态 | 路径 |
+|---|---|---|
+| | | |
 
 ## 活跃 Issue
 

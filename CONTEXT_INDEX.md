@@ -22,6 +22,7 @@
 | 场景 | 模板 |
 |---|---|
 | 需求规格评审 | `templates/spec-template.md` |
+| Spec 索引（全量目录） | `templates/spec-index-template.md` |
 | 轻量计划（<500 tokens） | `templates/plan-document-template.md` |
 | 拆任务 Issue | `templates/issue-template.md` |
 | Milestone 定义 | `templates/milestone-template.md` |
@@ -57,6 +58,7 @@
 
 | 用途 | 路径 |
 |---|---|
+| 当前运行状态（启动先读，≤500 tokens） | `PLAN.md` |
 | playbook 自举计划（已完成归档） | `docs/plans/phase-1-migration.md` |
 | 问题自动记录 | `docs/issues-log.md` |
 | Session 摘要 | `docs/session-summaries/` |

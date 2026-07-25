@@ -1,68 +1,249 @@
 #!/usr/bin/env python3
-"""同步 skill 到各工具目录。
+"""同步 / 安装 playbook 的 skill 与模板。
 
-两种模式：
+三种模式：
 
 1. playbook 模式（默认）：
    真源：仓库根 `skills/`（唯一可编辑处）。
-   目标：`.cursor/skills/`（Cursor）、`.claude/skills/`（Claude Code）。
+   目标：本仓库 `.cursor/skills/`、`.claude/skills/`。
 
-2. 项目模式（--project <路径>）：
-   在指定项目内同步 `.cursor/skills/` ↔ `.claude/skills/`。
-   以 .claude/skills/ 为源（Claude Code 常为原始工具），同步到 .cursor/skills/。
+2. 安装模式（--install <项目路径>）：
+   把本仓库的 skill **与其依赖的模板**装到目标项目：
+   - `skills/`     -> `<项目>/.cursor/skills/`、`<项目>/.claude/skills/`
+   - `templates/`  -> `<项目>/templates/`（skill 正文里的 `templates/xxx.md` 引用据此解析）
+   - `AGENTS.md`   -> `<项目>/AGENTS.md`（已存在则跳过，除非加 --force-agents）
+
+3. 项目内同步模式（--project <项目路径>）：
+   仅在目标项目内部把 `.claude/skills/` 同步到 `.cursor/skills/`。
+   注意：这**不是**安装，不会从本仓库取 skill，也不分发模板。要装请用 --install。
 
 用法：
-    python scripts/sync-skills.py                          # playbook 模式：同步 playbook skill
-    python scripts/sync-skills.py --check                  # playbook 模式：检查是否需同步
-    python scripts/sync-skills.py --project <项目路径>      # 项目模式：同步项目内 skill
-    python scripts/sync-skills.py --project <路径> --check  # 项目模式：检查
+    python scripts/sync-skills.py                            # playbook 模式：同步本仓库副本
+    python scripts/sync-skills.py --check                    # playbook 模式：按内容校验
+    python scripts/sync-skills.py --install <项目路径>        # 安装到项目（skill + 模板）
+    python scripts/sync-skills.py --install <路径> --check    # 校验项目安装是否完整/漂移
+    python scripts/sync-skills.py --project <项目路径>        # 项目内 .claude -> .cursor
+    python scripts/sync-skills.py --project <路径> --check    # 项目内同步校验
 
-注意：编辑 skill 请改真源（playbook 的 skills/ 或项目的 .claude/skills/），再跑本脚本。
+注意：编辑 skill 请改真源（本仓库 `skills/`），再跑本脚本。
 """
 from __future__ import annotations
 
+import argparse
+import hashlib
+import re
 import shutil
 import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
-SRC = ROOT / "skills"
-TARGETS = [ROOT / ".cursor" / "skills", ROOT / ".claude" / "skills"]
+SRC_SKILLS = ROOT / "skills"
+SRC_TEMPLATES = ROOT / "templates"
+SRC_AGENTS = ROOT / "AGENTS.md"
+
+# 本仓库内的 skill 副本位置
+PLAYBOOK_TARGETS = [ROOT / ".cursor" / "skills", ROOT / ".claude" / "skills"]
+
+# 安装到目标项目时的 skill 目录（相对项目根）
+INSTALL_SKILL_DIRS = [Path(".cursor") / "skills", Path(".claude") / "skills"]
+
+# 匹配 skill 正文中对模板的引用，如 `templates/spec-template.md`
+TEMPLATE_REF_RE = re.compile(r"templates/([\w.-]+\.md)")
+
+
+# ---------- 通用工具 ----------
 
 
 def iter_skill_dirs(src: Path):
     """返回 src 下所有包含 SKILL.md 的 skill 目录。"""
+    if not src.exists():
+        return
     for child in sorted(src.iterdir()):
         if child.is_dir() and (child / "SKILL.md").exists():
             yield child
 
 
+def file_digest(path: Path) -> str:
+    """单个文件的 SHA-256。"""
+    return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+def dir_digest(skill_dir: Path) -> dict[str, str]:
+    """skill 目录内所有文件的 {相对路径: SHA-256}，用于内容级比对。"""
+    digests: dict[str, str] = {}
+    for path in sorted(skill_dir.rglob("*")):
+        if path.is_file():
+            digests[path.relative_to(skill_dir).as_posix()] = file_digest(path)
+    return digests
+
+
+def copy_skill(src: Path, dst: Path) -> None:
+    """整目录覆盖复制一个 skill。"""
+    if dst.exists():
+        shutil.rmtree(dst)
+    shutil.copytree(src, dst)
+
+
+def referenced_templates(skill_dirs: list[Path]) -> set[str]:
+    """扫描 skill 正文，收集被引用的模板文件名。"""
+    names: set[str] = set()
+    for skill in skill_dirs:
+        for md in skill.rglob("*.md"):
+            names.update(TEMPLATE_REF_RE.findall(md.read_text(encoding="utf-8")))
+    return names
+
+
+def compare_skills(src: Path, dst: Path, label: str) -> bool:
+    """按内容比对两个 skill 根目录，返回是否存在差异（True = 有差异）。"""
+    src_map = {d.name: d for d in iter_skill_dirs(src)}
+    dst_map = {d.name: d for d in iter_skill_dirs(dst)}
+
+    missing = sorted(set(src_map) - set(dst_map))
+    extra = sorted(set(dst_map) - set(src_map))
+    drifted = [
+        name
+        for name in sorted(set(src_map) & set(dst_map))
+        if dir_digest(src_map[name]) != dir_digest(dst_map[name])
+    ]
+
+    if missing:
+        print(f"[缺失] {label}：{missing}")
+    if extra:
+        print(f"[多余] {label}：{extra}")
+    if drifted:
+        print(f"[内容漂移] {label}：{drifted}")
+
+    return bool(missing or extra or drifted)
+
+
+def check_template_deps(skill_dirs: list[Path], templates_dir: Path, label: str) -> bool:
+    """检查 skill 引用的模板在目标侧是否存在，返回是否有缺失。"""
+    needed = referenced_templates(skill_dirs)
+    if not needed:
+        return False
+
+    absent = sorted(name for name in needed if not (templates_dir / name).exists())
+    if absent:
+        print(f"[依赖缺失] {label} 缺少被引用的模板：{absent}")
+    return bool(absent)
+
+
+# ---------- playbook 模式 ----------
+
+
 def sync_playbook() -> int:
-    """playbook 模式：从 skills/ 同步到 .cursor/ + .claude/"""
-    if not SRC.exists():
-        print(f"[错误] 真源目录不存在：{SRC}")
+    """从 skills/ 同步到本仓库 .cursor/ + .claude/。"""
+    if not SRC_SKILLS.exists():
+        print(f"[错误] 真源目录不存在：{SRC_SKILLS}")
         return 1
 
-    skill_dirs = list(iter_skill_dirs(SRC))
+    skill_dirs = list(iter_skill_dirs(SRC_SKILLS))
     if not skill_dirs:
-        print(f"[警告] {SRC} 下没有发现 skill")
+        print(f"[警告] {SRC_SKILLS} 下没有发现 skill")
         return 0
 
-    for target in TARGETS:
+    for target in PLAYBOOK_TARGETS:
         target.mkdir(parents=True, exist_ok=True)
         for skill in skill_dirs:
-            dest = target / skill.name
-            if dest.exists():
-                shutil.rmtree(dest)
-            shutil.copytree(skill, dest)
+            copy_skill(skill, target / skill.name)
         print(f"[完成] 已同步 {len(skill_dirs)} 个 skill -> {target.relative_to(ROOT)}")
     return 0
 
 
-def sync_project(project_path: Path) -> int:
-    """项目模式：从 .claude/skills/ 同步到 .cursor/skills/"""
-    src = project_path / ".claude" / "skills"
-    dst = project_path / ".cursor" / "skills"
+def check_playbook() -> int:
+    """playbook 模式检查：内容级比对 + 模板依赖扫描。"""
+    skill_dirs = list(iter_skill_dirs(SRC_SKILLS))
+    need = False
+
+    for target in PLAYBOOK_TARGETS:
+        if compare_skills(SRC_SKILLS, target, str(target.relative_to(ROOT))):
+            need = True
+
+    if check_template_deps(skill_dirs, SRC_TEMPLATES, "templates/"):
+        need = True
+
+    if not need:
+        print(f"[一致] {len(skill_dirs)} 个 skill 与模板依赖均已就位")
+    return 1 if need else 0
+
+
+# ---------- 安装模式 ----------
+
+
+def install_project(project: Path, force_agents: bool = False) -> int:
+    """把本仓库 skill + 模板（+ AGENTS.md）安装到目标项目。"""
+    skill_dirs = list(iter_skill_dirs(SRC_SKILLS))
+    if not skill_dirs:
+        print(f"[错误] 真源没有 skill：{SRC_SKILLS}")
+        return 1
+
+    project.mkdir(parents=True, exist_ok=True)
+
+    # 1) skill
+    for rel in INSTALL_SKILL_DIRS:
+        target = project / rel
+        target.mkdir(parents=True, exist_ok=True)
+        for skill in skill_dirs:
+            copy_skill(skill, target / skill.name)
+        print(f"[完成] {len(skill_dirs)} 个 skill -> {rel.as_posix()}/")
+
+    # 2) 模板（skill 正文按 `templates/xxx.md` 引用，必须一并分发）
+    needed = referenced_templates(skill_dirs)
+    dst_templates = project / "templates"
+    dst_templates.mkdir(parents=True, exist_ok=True)
+    copied, absent = 0, []
+    for name in sorted(needed):
+        src_file = SRC_TEMPLATES / name
+        if src_file.exists():
+            shutil.copy2(src_file, dst_templates / name)
+            copied += 1
+        else:
+            absent.append(name)
+    print(f"[完成] {copied} 个模板 -> templates/")
+    if absent:
+        print(f"[警告] 真源缺少被引用的模板（请修 playbook）：{absent}")
+
+    # 3) AGENTS.md（跨工具入口，默认不覆盖已有文件）
+    dst_agents = project / "AGENTS.md"
+    if not SRC_AGENTS.exists():
+        print("[警告] 本仓库缺少 AGENTS.md，跳过")
+    elif dst_agents.exists() and not force_agents:
+        print("[跳过] 项目已有 AGENTS.md（如需覆盖加 --force-agents）")
+    else:
+        shutil.copy2(SRC_AGENTS, dst_agents)
+        print("[完成] AGENTS.md -> 项目根")
+
+    print(f"[安装完成] 目标项目：{project}")
+    return 1 if absent else 0
+
+
+def check_install(project: Path) -> int:
+    """校验目标项目的安装是否完整（skill 内容 + 模板依赖）。"""
+    skill_dirs = list(iter_skill_dirs(SRC_SKILLS))
+    need = False
+
+    for rel in INSTALL_SKILL_DIRS:
+        if compare_skills(SRC_SKILLS, project / rel, rel.as_posix()):
+            need = True
+
+    if check_template_deps(skill_dirs, project / "templates", "项目 templates/"):
+        need = True
+
+    if not (project / "AGENTS.md").exists():
+        print("[提示] 项目缺少 AGENTS.md（跨工具入口）")
+
+    if not need:
+        print(f"[一致] 项目安装完整（{len(skill_dirs)} 个 skill + 模板依赖）")
+    return 1 if need else 0
+
+
+# ---------- 项目内同步模式 ----------
+
+
+def sync_project(project: Path) -> int:
+    """项目内：.claude/skills/ -> .cursor/skills/（不涉及本仓库真源）。"""
+    src = project / ".claude" / "skills"
+    dst = project / ".cursor" / "skills"
 
     if not src.exists():
         print(f"[错误] 项目 .claude/skills/ 不存在：{src}")
@@ -75,81 +256,47 @@ def sync_project(project_path: Path) -> int:
 
     dst.mkdir(parents=True, exist_ok=True)
     for skill in skill_dirs:
-        dest = dst / skill.name
-        if dest.exists():
-            shutil.rmtree(dest)
-        shutil.copytree(skill, dest)
-    print(f"[完成] 已同步 {len(skill_dirs)} 个 skill -> .cursor/skills/ （项目：{project_path}）")
+        copy_skill(skill, dst / skill.name)
+    print(f"[完成] 已同步 {len(skill_dirs)} 个 skill -> .cursor/skills/（项目：{project}）")
     return 0
 
 
-def check_playbook() -> int:
-    """playbook 模式检查"""
-    src_names = {d.name for d in iter_skill_dirs(SRC)} if SRC.exists() else set()
-    need = False
-    for target in TARGETS:
-        dst_names = (
-            {d.name for d in target.iterdir() if (d / "SKILL.md").exists()}
-            if target.exists()
-            else set()
-        )
-        if dst_names != src_names:
-            need = True
-            print(f"[需同步] {target.relative_to(ROOT)}：{sorted(src_names - dst_names)}")
-    return 1 if need else 0
-
-
-def check_project(project_path: Path) -> int:
-    """项目模式检查"""
-    src = project_path / ".claude" / "skills"
-    dst = project_path / ".cursor" / "skills"
-
-    src_names = (
-        {d.name for d in src.iterdir() if (d / "SKILL.md").exists()}
-        if src.exists()
-        else set()
-    )
-    dst_names = (
-        {d.name for d in dst.iterdir() if (d / "SKILL.md").exists()}
-        if dst.exists()
-        else set()
-    )
-
-    if src_names != dst_names:
-        missing = src_names - dst_names
-        extra = dst_names - src_names
-        if missing:
-            print(f"[需同步] .cursor/skills/ 缺少：{sorted(missing)}")
-        if extra:
-            print(f"[需同步] .cursor/skills/ 多出：{sorted(extra)}")
+def check_project(project: Path) -> int:
+    """项目内同步检查：内容级比对。"""
+    src = project / ".claude" / "skills"
+    if compare_skills(src, project / ".cursor" / "skills", ".cursor/skills/"):
         return 1
 
-    print(f"[一致] .claude/skills/ 与 .cursor/skills/ 已同步（{len(src_names)} 个 skill）")
+    count = len(list(iter_skill_dirs(src)))
+    print(f"[一致] .claude/skills/ 与 .cursor/skills/ 已同步（{count} 个 skill）")
     return 0
+
+
+# ---------- 入口 ----------
+
+
+def main() -> int:
+    parser = argparse.ArgumentParser(
+        description="同步 / 安装 playbook 的 skill 与模板",
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+    )
+    group = parser.add_mutually_exclusive_group()
+    group.add_argument("--install", metavar="项目路径", help="从本仓库安装 skill + 模板到目标项目")
+    group.add_argument("--project", metavar="项目路径", help="项目内 .claude/skills -> .cursor/skills（非安装）")
+    parser.add_argument("--check", action="store_true", help="只检查不写入")
+    parser.add_argument("--force-agents", action="store_true", help="安装时覆盖项目已有的 AGENTS.md")
+    args = parser.parse_args()
+
+    if args.install:
+        project = Path(args.install).resolve()
+        return check_install(project) if args.check else install_project(project, args.force_agents)
+
+    if args.project:
+        project = Path(args.project).resolve()
+        return check_project(project) if args.check else sync_project(project)
+
+    return check_playbook() if args.check else sync_playbook()
 
 
 if __name__ == "__main__":
-    is_check = "--check" in sys.argv
-
-    # 解析 --project 参数
-    project_path = None
-    if "--project" in sys.argv:
-        idx = sys.argv.index("--project")
-        if idx + 1 < len(sys.argv):
-            project_path = Path(sys.argv[idx + 1]).resolve()
-        else:
-            print("[错误] --project 需要一个路径参数")
-            sys.exit(1)
-
-    if project_path:
-        # 项目模式
-        if is_check:
-            sys.exit(check_project(project_path))
-        else:
-            sys.exit(sync_project(project_path))
-    else:
-        # playbook 模式
-        if is_check:
-            sys.exit(check_playbook())
-        else:
-            sys.exit(sync_playbook())
+    sys.exit(main())

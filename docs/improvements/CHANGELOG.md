@@ -13,6 +13,30 @@
 
 ---
 
+### 2026-07-26 安装闭环修复 + 治理瘦身（v0.4）
+
+- **层：** Execute / Verify / Improve
+- **现象：**（来自一次真实项目复盘审计）
+  - 装到项目后 skill 引用的六个模板全部缺失 → `templates/xxx.md` 引用断链
+  - `--project` 被 README 写成安装方式，实际只是项目内 `.claude → .cursor` 同步，不从本仓库取 skill、不分发模板
+  - `--check` 只比目录名，副本内容漂移查不出来
+  - `issue-template` 的「P2（边界 & 错误处理）」与 plan-breakdown 的「P2 = 可后续 PR」冲突，诱导把错误处理降级
+  - Spec 缺状态与父子关系，冻结后被原地改；PLAN.md 被当成项目全量真源使用
+- **根因：** 发布包不闭合（skill 与依赖资产分离分发）；Spec 层缺最小治理约定
+- **改进动作：**（已按「只沉淀通用规则」裁剪，排除企业级方案）
+  - `scripts/sync-skills.py`：新增 `--install <项目>` 真正从本仓库装 skill + 模板 + AGENTS.md（默认不覆盖已有 AGENTS.md）；`--check` 改为 SHA-256 内容比对并扫描模板依赖；保留 `--project` 但语义说清为项目内同步
+  - `README.md`：安装以 `--install` 为准，三种模式列表区分
+  - `templates/issue-template.md`：P0-P3 标题与分级表对齐，加注释「边界/错误处理若阻塞属 P0/P1」
+  - PLAN.md 统一定位为「当前运行状态唯一真源」（`AGENTS.md`、`plan-breakdown`、`plan-document-template`），并补上仓库根 `PLAN.md`
+  - `plan-spec` + `spec-template`：四态生命周期（Draft/Frozen/Verified/Superseded）、`spec_id`/`parent`/`version` 字段、冻结后新 revision、放宽字数改为「过大拆子 Spec」；新增 `templates/spec-index-template.md`
+  - 轻量 AC 关联：Spec 验收项可编号 AC，Issue 可声明 `accepts`，`verify-review` 加逐 AC 证据表，`verify-test` 要求测试计划对上 AC
+  - `execute-implement` 加「外部写操作授权」（commit/push/PR/merge/tag/Release/workflow 逐项授权）；`verify-review` 加越权检查项
+  - `improve-retro`：记录格式改为 事实/推断/建议/限制 四栏，新增「进 playbook 的门槛」（需回放或第二条独立证据，栈特定经验不上提）
+- **明确不做：** 新增 release-publish/git-publish skill、REQ→AC 全链路机器门禁、`traceability.yaml`、observe-session 快照协议大改、token/返工率统计
+- **产出：** 安装脚本闭合 + 6 个 skill/模板更新 + 新增 `PLAN.md` 与 spec 索引模板，已 sync 到 `.cursor`/`.claude`
+
+---
+
 ### 2026-07-19 融入服务化封装与工程骨架管理原则（框架无关）
 
 - **层：** Plan / Execute / Verify / Improve

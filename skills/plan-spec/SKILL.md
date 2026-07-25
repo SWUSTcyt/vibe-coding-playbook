@@ -31,8 +31,9 @@ description: 需求规格评审。Use when 启动新项目/新功能、需求还
    - 非功能性需求：性能、安全、可维护性
 3. **确认技术约束** — 语言、框架、部署环境、已有技术栈是否必须沿用。
 4. **定义接口契约（若产出要被他人/他系统调用）** — 见下方「接口契约三问」。
-5. **产出结构化 Spec** — 按下方模板填写，逐项与用户确认。
-6. **交接** — Spec 经用户确认后，提示进入 plan-breakdown 做任务拆分。
+5. **产出结构化 Spec** — 按下方模板填写，逐项与用户确认；初始 `status: Draft`。
+6. **冻结** — 用户确认后把 `status` 改为 `Frozen`，并在 `docs/spec/INDEX.md` 登记。
+7. **交接** — Spec 冻结后，提示进入 plan-breakdown 做任务拆分。
 
 ## 接口契约三问（条件触发）
 
@@ -48,9 +49,32 @@ description: 需求规格评审。Use when 启动新项目/新功能、需求还
 - **契约一经发布不改**，要变就加版本（`/v1` → `/v2`），旧调用方继续可用。
 - 契约是语言/框架无关的承诺：调用方不需要知道内部用什么实现。
 
+## Spec 生命周期（四态）
+
+每份 Spec 在 front matter 标 `status`，状态决定能做什么：
+
+| 状态 | 含义 | 允许的动作 |
+|---|---|---|
+| Draft | 还在澄清 | 自由编辑；**不能**作为实施或验收完成的依据 |
+| Frozen | 范围、验收、优先级已确认 | 可以拆 Issue、进入实施 |
+| Verified | P0/P1 验收项都有通过证据 | 可作为交付依据 |
+| Superseded | 已被新版本取代 | 只读，必须指向后继 Spec |
+
+**冻结后怎么改：** 冻结后的语义变更（范围、验收、优先级）不要原地改，新建一份 revision，旧版保持只读并标 `superseded_by`。写清变更原因与受影响的验收项。错别字、链接失效这类修正可以原地改。
+
+## 目录与拆分
+
+```
+docs/spec/
+  INDEX.md            # Spec 目录：spec_id / 标题 / status / 路径
+  <feature>.md        # 一个 Feature 一份 Spec；子 Spec 必须写 parent
+```
+
+需求过大时**拆子 Spec**（每份写明 `parent`），不要堆成一份长文，也不要散成互不相认的碎片。`PLAN.md` 只挂当前活跃的 Spec 链接，全量目录在 `INDEX.md`。
+
 ## 产出
 
-一份 Spec 文档（Markdown，约 200-500 字），使用 `templates/spec-template.md` 模板，包含：
+一份 Spec 文档（Markdown），使用 `templates/spec-template.md` 模板。**篇幅以说清边界为准**——说不清就补，过大就拆子 Spec，不要为了凑长度堆细节。包含：
 
 - 一句话描述（是什么 + 给谁用）
 - 核心功能列表
@@ -60,7 +84,7 @@ description: 需求规格评审。Use when 启动新项目/新功能、需求还
 - 接口契约（若产出对外交付：输入 / 输出与错误 / 调用方式）
 - 验收总纲（P0 级，项目层面的阻塞性标准）
 
-保存位置建议：`docs/spec/<项目名>.md`。
+保存到 `docs/spec/<feature>.md`，并在 `docs/spec/INDEX.md` 登记一行。
 
 ## 提示词参考
 
@@ -73,9 +97,12 @@ description: 需求规格评审。Use when 启动新项目/新功能、需求还
 - **把 Spec 写成需求清单堆砌** → 缺「边界条件」和「不做什么」，后期范围蔓延。边界必须显式写。
 - **范围过大** — 若需求横跨多个独立子系统，先帮用户拆成子项目，每个子项目各走一遍 Spec → 拆分 → 实现。
 - **产出要对外交付却没定契约** → 实现完再补契约，接口形状会被内部实现牵着走。契约必须在 Spec 阶段定。
+- **Draft 就开工** → 边写边改需求，实现被牵着走。拆 Issue 前先把 Spec 冻结（Frozen）。
+- **冻结后原地改语义** → 已按旧版实施的 Issue 失去依据。语义变更要新建 revision，旧版标 Superseded。
+- **子 Spec 不写 parent** → 散成互不相认的碎片，看不出全貌。子 Spec 必须挂在父 Spec 下并登记 INDEX。
 
 ## 参考
 
-- 模板：`templates/spec-template.md`
+- 模板：`templates/spec-template.md`、`templates/spec-index-template.md`
 - 下一步：`skills/plan-breakdown/SKILL.md`（把 Spec 拆成 Epic → Milestone → Issue）
 - 方法论出处：唯一真源 `docs/AI 编程方法论 v1.2 — 可操作版.md` 第 1.1 节
