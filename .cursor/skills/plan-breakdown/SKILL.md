@@ -21,7 +21,7 @@ description: 任务归约拆分与验收标准前置。Use when 已有 Spec 或�
 
 ## 流程
 
-1. **拆 Epic** — 每个 Epic = 一个独立功能模块，先拆当前需要的 2-3 个。
+1. **拆 Epic** — 每个 Epic = 一个独立功能模块，先拆当前需要的 2-3 个。**若 plan-spec 已出过 Spec 地图，直接沿用：一份子 Spec 对应一个 Epic**，不要重新划一套边界。
 2. **拆 Milestone** — 选第一个 Epic，拆出 Milestone，每个含：起始条件、交付物、验收标准。只细化前 1-2 个。用 `templates/milestone-template.md`。
 3. **拆 Issue** — 选第一个 Milestone，拆到 Issue 级别。每个 Issue 含：任务描述、输入/输出、依赖条件、P0-P3 验收标准。用 `templates/issue-template.md`。
 4. **写验收标准（前置）** — 拆 Issue 的同时按 P0-P3 分级写验收标准（见下表），让用户确认/调整。
@@ -68,6 +68,7 @@ description: 任务归约拆分与验收标准前置。Use when 已有 Spec 或�
 - **验收标准事后补** → 标准会被实现牵着走而滑坡。必须创建时前置写好。
 - **Plan Document 写成大杂烩** → 超出 500 tokens 就失去「快速对齐」价值。细节交给 Issue。
 - **重构一把梭** → 一个 Issue 同时改配置、prompt、结构、协议，出错无法定位。按关注点逐个剥离，每步可运行。
+- **无视 Spec 地图另划 Epic** → Epic 边界与子 Spec 对不上，验收找不到依据。有地图就一份子 Spec 一个 Epic。
 
 ## 参考
 
