@@ -29,6 +29,28 @@
 
 ---
 
+### 2026-07-26 Spec 治理的可执行性补齐（自查发现）
+
+- **层：** Plan / Verify
+- **现象：** 对上一条改动做实用性自查（模拟真实项目走一遍流程）暴露 6 处执行不了的地方：
+  - `Verified` 是死状态——四态定义了它，但没有任何 skill 说谁在何时置位，实际跑起来 Spec 永远停在 Frozen
+  - status 三处维护（子 Spec front matter / 项目级 Spec 的子 Spec 清单 / INDEX.md / PLAN.md 共四处），必然漂移
+  - `spec_id` 与 AC 编号没有分配规则，Agent 会给每份 Spec 都写 `SPEC-001`
+  - 「已有项目加新功能」是 plan-spec 的明示场景，但分解步骤只覆盖了从零开始
+  - 单一能力项目被强制建 `INDEX.md`，一份 Spec 也要维护索引
+  - 单一能力项目不建 INDEX 后，增量流程「先读 INDEX.md」会读到不存在的文件（执行断点）
+- **根因：** 上一条改动只定义了结构，没有把每个字段/状态的「谁写、何时写、冲突了看谁」落到具体步骤上。
+- **改进动作：**
+  - 生命周期表加「谁置位」列；`verify-review` 新增「回写 Spec 状态」收尾节：最后一个 Issue 合入且 P0/P1 AC 全通过时转 Verified，有 blocked 则维持 Frozen
+  - 明确 status 真源为各 Spec front matter、`INDEX.md` 为镜像；子 Spec 清单去掉 status 列，`PLAN.md` 活跃 Spec 表去掉状态列（只列 Frozen）
+  - 新增「编号怎么取」：spec_id 查 INDEX 最大号 +1、只增不复用；AC 编号 Spec 内唯一，跨 Spec 写 `SPEC-002/AC-001`，review 表头注明所属 Spec
+  - 新增「增量需求怎么挂」三分支：新独立能力 → 新子 Spec（必要时补建 PROJECT.md 与 INDEX）、语义变更 → revision、补充说明 → 原地改
+  - 单一能力项目免建 INDEX，出现第二份时补建；增量入口注明「还没建就直接看 docs/spec/ 下已有 Spec」
+  - 各处补对应常见错误条目
+- **产出：** `plan-spec` / `verify-review` / `spec-template` / `spec-index-template` / `plan-document-template` 更新，已 sync
+
+---
+
 ### 2026-07-26 安装闭环修复 + 治理瘦身（v0.4）
 
 - **层：** Execute / Verify / Improve

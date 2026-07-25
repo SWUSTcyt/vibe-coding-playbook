@@ -1,5 +1,5 @@
 ---
-spec_id: SPEC-001              # 稳定 ID，一经分配不复用
+spec_id: SPEC-001              # 稳定 ID，只增不复用；新建前查 INDEX.md 取最大号 +1
 title: [项目/功能名称]
 status: Draft                  # Draft | Frozen | Verified | Superseded
 version: 1                     # 语义变更时 +1，旧版转 Superseded
@@ -26,11 +26,12 @@ superseded_by:                 # 可选：被哪一版取代（本版转 Superse
 
 <!-- 仅项目级 Spec 填写；单一能力 Spec 删掉本节 -->
 <!-- 先只写标题与一句话描述，确认地图后再逐个展开，不要一次全写细 -->
+<!-- 这里不记 status：状态真源在各子 Spec 的 front matter，镜像在 INDEX.md -->
 
-| spec_id | 能力 | 一句话描述 | status |
-|---|---|---|---|
-| SPEC-002 | | | Draft |
-| SPEC-003 | | | Draft |
+| spec_id | 能力 | 一句话描述 |
+|---|---|---|
+| SPEC-002 | | |
+| SPEC-003 | | |
 
 ## 核心功能
 
@@ -80,6 +81,7 @@ superseded_by:                 # 可选：被哪一版取代（本版转 Superse
 
 <!-- AC 编号可选；多 Issue 协作或需要逐项追踪证据时建议编号 -->
 <!-- 编号后 Issue 用 accepts 声明，Review 按 AC 逐项给证据 -->
+<!-- 编号在本 Spec 内唯一即可；跨 Spec 引用写成 SPEC-002/AC-001 -->
 
 | ID | 验收项 | 级别 |
 |---|---|---|

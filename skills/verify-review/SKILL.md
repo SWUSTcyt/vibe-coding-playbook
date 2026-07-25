@@ -57,14 +57,25 @@ description: 代码审查与分层验收。Use when PR 提交后、或提交前�
 **Issue 声明了 AC 时**（`accepts: AC-001, AC-002`），把 P0/P1 检查改成逐 AC 列，一条 AC 一条证据：
 
 ```markdown
-## 逐项验收
+## 逐项验收（Spec: SPEC-002）
 | AC | 级别 | 结论 | 证据 |
 |---|---|---|---|
 | AC-001 | P0 | 通过 | `tests/test_api.py:42` 断言 4xx |
 | AC-002 | P0 | blocked | 缺 API key，已跑契约测试 `tests/contract.py:18` 替代 |
 ```
 
+AC 编号只在单份 Spec 内唯一，所以表头要写清属于哪份 Spec；一个 Issue 跨多份 Spec 时，AC 列写全称 `SPEC-002/AC-001`。
+
 不要用一句「P0 通过」概括多条 AC——哪条通过、凭什么通过，必须能对上。
+
+## 回写 Spec 状态（收尾动作）
+
+审查结论为「可合入」后，检查这个 Issue 是不是它所属 Spec 的最后一个：
+
+- 该 Spec 的 P0/P1 AC **全部有通过证据** → 把 Spec 的 `status` 改为 `Verified`，`INDEX.md` 同步改。
+- 还有 AC 未完成、或任一 AC 处于 **blocked** → 保持 `Frozen`，在结论里写明还差哪几条。
+
+不做这一步，Spec 会永远停在 Frozen，四态生命周期形同虚设。
 
 ## 常见错误
 
@@ -73,6 +84,8 @@ description: 代码审查与分层验收。Use when PR 提交后、或提交前�
 - **泛泛而评** → 不对照具体验收标准。必须逐项核验。
 - **无证据下结论** → 没有「文件:行号/日志」证据引用就下结论，退回重审。
 - **拿一句「P0 通过」盖住多条 AC** → 看不出哪条真验了。Issue 声明了 AC 就逐条列证据。
+- **合入后不回写 Spec 状态** → Spec 永远停在 Frozen，看不出哪些需求真验完了。全部 P0/P1 AC 通过就转 Verified。
+- **有 blocked 的 AC 也转 Verified** → 把「没验」当成「验过」。只要有一条 blocked 就维持 Frozen。
 
 ## 参考
 

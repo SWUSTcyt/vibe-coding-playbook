@@ -9,11 +9,11 @@
 
 ## 活跃 Spec
 
-<!-- 只列本 Milestone 涉及的 Spec（须为 Frozen），全量目录见 docs/spec/INDEX.md -->
+<!-- 只列本 Milestone 涉及的 Spec（须为 Frozen，故不重复记状态），全量目录与状态见 docs/spec/INDEX.md -->
 
-| Spec ID | 状态 | 路径 |
-|---|---|---|
-| | | |
+| Spec ID | 路径 |
+|---|---|
+| | |
 
 ## 活跃 Issue
 
