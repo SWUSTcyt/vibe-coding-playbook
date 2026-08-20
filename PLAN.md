@@ -24,9 +24,10 @@
 
 ## 不做的事
 
-- 不新增 `release-publish` / `git-publish` skill
 - 不做 REQ→AC→Issue→Test 全链路机器门禁、不引入 `traceability.yaml`
 - 不做 token/返工率自动统计
+
+> 注：原「不新增 release-publish skill」已随复盘 P0-5 调整——新增 `verify-release`（发布/合并安全 + 协作感知），见 `docs/improvements/CHANGELOG.md`。
 
 ## 验收分级
 

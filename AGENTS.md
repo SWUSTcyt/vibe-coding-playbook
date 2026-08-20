@@ -28,6 +28,7 @@ Plan（规划）→ Execute（执行）→ Verify（验证）→ Observe（观�
 | Execute | `execute-implement` | 一个 Issue 进入开发 |
 | Verify | `verify-test` | 写三层测试 / 编码前出测试计划 |
 | Verify | `verify-review` | PR 提交后或提交前自查 |
+| Verify | `verify-release` | 阶段结束要 commit/push/PR/merge，需发布安全门禁与协作感知 |
 | Observe | `observe-session` | 会话结束写摘要 / 检测模型降质 |
 | Improve | `improve-retro` | 反复踩坑 / Milestone 结束，提炼规则与新 Skill |
 

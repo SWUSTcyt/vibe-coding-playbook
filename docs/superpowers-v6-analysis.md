@@ -68,6 +68,8 @@ Superpowers 自 2025 年 10 月创建以来，经历了多个重要版本：
 | v6.0.3 | 2026.06 | SDD scratch 文件迁移 |
 | v6.1.0 | 2026.06 | Codex 集成优化；压缩 using-superpowers 引导文档 |
 | v6.1.1 | 2026.07 | Codex 不再重新注册 Claude SessionStart 钩子；清理孤立代码 |
+| v6.2.0 | 2026.07 | SDD 工作区按计划隔离（plan-scoped）；`writing-good-tests` 可证伪测试规范；发布分支 forge-neutral + 不再提供丢弃工作选项 |
+| v6.3.0 | 2026.08 | 头脑风暴按任务规模三档分流；SDD 冲突不再空转（记录裁决继续）；小同形任务批处理；worktree 删除不销毁未跟踪文件；新增 Devin/Hermes 支持 |
 
 ---
 
@@ -813,6 +815,22 @@ skills/using-superpowers/references/
 | GitHub Stars | ~174K | ~246K | 增长 | - |
 
 ---
+
+## 五点五、v6.2.0 / v6.3.0 通用增量（本次已并入 skills）
+
+原分析停在 v6.1.1（2026-07-06）。v6.2.0（2026-07-23）、v6.3.0（2026-08-12）中与本 playbook 相关的通用经验，已在本次优化并入对应 skill：
+
+| Superpowers 增量 | 版本 | 通用价值 | 已并入 |
+|---|---|---|---|
+| `writing-good-tests` 可证伪规范：命名「会让测试失败的生产改动」、独立于被测代码推导预期、变异检查；点名 string-presence trap 与 change-detector trap | v6.2.0 | 高 | `verify-test`「可证伪测试」小节 + 常见错误 |
+| SDD 工作区 plan-scoped：一个计划一个台账目录、台账首行写明所属计划，防跨计划台账污染 | v6.2.0 | 高 | `execute-implement` 任务台账说明 |
+| 发布分支 forge-neutral + 破坏性操作打字确认 + 不再提供「丢弃工作」默认项 | v6.2.0/6.3.0 | 高 | 新增 `verify-release` skill |
+| worktree 删除遇未提交/未跟踪文件时停下询问，不 `--force` | v6.3.0 | 中 | `verify-release`「破坏性操作」 |
+| 审查员只读、怀疑实现者理由、「无法从 diff 验证」裁决、证据带 file:line | v6.0/6.3 | 高 | `verify-review`「证据资格审查」 |
+| 头脑风暴/规格按任务规模分档（spike/bounded/architectural），小任务跳过重仪式 | v6.3.0 | 中 | 与现有 plan-spec「极小改动不必走完整 Spec」一致，暂不新增 |
+| SDD 冲突不空转：非破坏性冲突记录裁决继续，仅破坏性操作停人工 | v6.3.0 | 中 | 与 `verify-release` 破坏性操作停止点一致 |
+
+vendored 参考：`reference/vendored-skills/superpowers@6.3.0/`（gitignore，仅借鉴，不纳入版本管理）。
 
 ## 六、信息来源
 

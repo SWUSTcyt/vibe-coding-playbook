@@ -32,7 +32,7 @@ description: 对照 Issue 与验收标准开发。Use when 一个 Issue 被分�
 - **Issue 足够小**，一次做对。
 - **信息按需获取** — 通过 `CONTEXT_INDEX.md` 按路径读取所需文档，不一次性灌入全部上下文。
 - 同一段代码反复写不对（≥2 次）→ 委托 explore 子 Agent 查文档/查类似实现，不要硬撞。
-- 若使用任务台账（task ledger）追踪子代理进度，放在稳定工作区目录，避免被 git clean 清理；示例路径：`.superpowers/sdd/progress.md`（对齐 v6.1.1）。
+- 若使用任务台账（task ledger）追踪子代理进度，放在稳定工作区目录，避免被 git clean 清理。**台账要按计划隔离**：每个计划一个独立目录、台账首行写明所属计划，否则同一工作树里的后续计划会把上一个计划的台账当成自己的进度（对齐 Superpowers v6.2.0 plan-scoped workspace）。示例路径：`.superpowers/sdd/<计划名>/progress.md`。
 
 ## 并行注意
 
@@ -47,6 +47,14 @@ description: 对照 Issue 与验收标准开发。Use when 一个 Issue 被分�
 - 默认只在本地改文件；未获授权不做任何远程写操作。
 - 只授权了 A 不代表可以做 B（授权 push ≠ 可以 merge，授权 commit ≠ 可以发 Release）。
 - 一次失败不要反复换认证方式重试；记录失败原因并上报。
+
+## 涉及模型 / 外部服务 / 连接器时（按需读取）
+
+写这类功能时，先读 `reference/model-and-connector-guide.md`，落三组规则（纯前端/CRUD/离线工具不触发，不必读）：
+
+- **失败关闭门禁**：先宿主 preflight，再外部请求；证据不足/版本冲突/权限失败/输入超限/来源不可访问都落可见失败终态，不调用模型；不允许模型自己把候选/转载/搜索摘要提升为 `verified`。
+- **三层不变量**：领域不变量（来源/权限/版本/确认范围/删除谱系，不可由模型决定）+ 外部契约（输入投影/结构化输出/字段互斥/上下文预算）+ 宿主状态机（正常/边界/失败/恢复/重放/并发/外部缺失终态）。
+- 对应的负例测试与连接器隔离要求见 `skills/verify-test/SKILL.md`。
 
 ## 子代理 dispatch 契约
 
@@ -70,6 +78,7 @@ description: 对照 Issue 与验收标准开发。Use when 一个 Issue 被分�
 写任何对外交付的服务或模块时（与是否重构无关），遵守：
 
 - **密钥纪律（硬规则）**：API key 等敏感信息永不进代码库。`.env` 进 `.gitignore`；`.env.example`（仅字段说明）进 git；生产环境由部署平台注入。一旦真实 key 进了 git 历史，必须重写历史 + 立即吊销 key。
+- **诊断字段白名单（硬规则）**：接外部 connector/MCP/API 时，诊断与日志只输出白名单字段（工具名/状态/数量/耗时/错误码/来源 host），**禁止整体序列化** URL query/headers/auth/原始 Action/ExecutionResource（真实事故：诊断整体序列化执行资源暴露认证头）；泄露即轮换 token 并记录「已轮换/无法审计第三方是否已撤销」。完整清单见 `templates/connector-isolation-checklist.md`。
 - **配置三层覆盖**：代码默认值（兜底）← 配置文件（本地开发）← 环境变量（部署注入，最高优先级）。目标：同一份代码不改一行能跑在任何环境。
 - **职责分层看「不该做什么」**：接入层不做业务判断、不调模型；业务层不感知协议（HTTP 等）、不直接读环境变量；配置层不混业务逻辑。
 - **封装边界**：调用方代码里不应出现内部实现的框架名/模型名，出现即泄漏。
@@ -86,6 +95,7 @@ description: 对照 Issue 与验收标准开发。Use when 一个 Issue 被分�
 ## 参考
 
 - 模板：`templates/pr-summary-template.md`
+- 涉及模型/外部服务/连接器：`reference/model-and-connector-guide.md`（失败关闭门禁 + 三层不变量 + 连接器隔离）
 - 配套：`skills/verify-test/SKILL.md`、`skills/verify-review/SKILL.md`
 - 借鉴：`reference/vendored-skills/superpowers/skills/test-driven-development`、`subagent-driven-development`（参考基线：Superpowers v6.0.x；已对照 v6.1.1 做增量优化）
 - 方法论出处：唯一真源 `docs/AI 编程方法论 v1.2 — 可操作版.md` 第 2.1 / 2.3 / 2.6 / 3.3 节
