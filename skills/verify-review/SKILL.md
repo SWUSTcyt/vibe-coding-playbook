@@ -39,6 +39,21 @@ description: 代码审查与分层验收。Use when PR 提交后、或提交前�
 - [ ] （服务/模块类）分层判据：本次若属「小改动」，是否被迫同时改了接入/业务/配置多处？是 → 分层有问题，提 P1。
 - [ ] （服务/模块类）密钥纪律：diff 中是否出现真实 key / `.env` 是否误入版本管理？是 → P0。
 - [ ] 本次是否做了未获授权的外部写操作（push / merge / tag / Release / 改 workflow）？是 → P0，并说明已产生的远端影响。
+- [ ] 每条 P0/P1 结论是否逐项引用了 evidence path（文件:行号 / 回执 / 数据库终态）？**「模型说已核验」不能作为 source_of_truth**。是 → 通过；否 → 退回。
+
+## 证据资格审查（涉及外部证据/模型/统计的结论）
+
+结论有没有说对是一回事，它凭的证据够不够格是另一回事。这类结论逐项回答：
+
+- [ ] 结论的来源是不是**允许的真源**（代码/数据库终态/外部回执/人工签字），而不是模型自述？
+- [ ] 原文是否**可访问、可逐字回读**，与 digest / 版本一致？
+- [ ] 统计口径里，**分母中的每一项**是否都满足资格（有全文、有日期、有适用依据）？不合格的要剔除。
+- [ ] 状态是否与证据一致？是否存在「正文披露了限制，最终却仍称完成」？
+- [ ] 失败是否发生在**模型调用/产生确定结论之前**（失败关闭），而不是先出结论再补免责？
+- [ ] 用户确认的范围，是否与实际变更一致（没有借「确认范围」把实现状态改成 verified）？
+- [ ] 若审查员**无法从 diff 判定**某要求（要求落在未改动代码里），标「无法从 diff 验证」交控制方自查，不要猜。
+
+**发现任一 P0/P1，结论必须是 `not_verified`，不能靠改写摘要措辞降级。** 审查员只读，不改工作树/分支；实现者「我故意这么留的」不构成撤销一条真实发现的理由（对齐 Superpowers 只读、怀疑理由的审查员）。
 
 ## 输出格式（Review Packet）
 
@@ -86,9 +101,11 @@ AC 编号只在单份 Spec 内唯一，所以表头要写清属于哪份 Spec；
 - **拿一句「P0 通过」盖住多条 AC** → 看不出哪条真验了。Issue 声明了 AC 就逐条列证据。
 - **合入后不回写 Spec 状态** → Spec 永远停在 Frozen，看不出哪些需求真验完了。全部 P0/P1 AC 通过就转 Verified。
 - **有 blocked 的 AC 也转 Verified** → 把「没验」当成「验过」。只要有一条 blocked 就维持 Frozen。
+- **只看结论对不对，不查证据够不够格** → 转载材料、无原文、分母不合格也放行。按「证据资格审查」逐项核。
+- **发现 P0/P1 却改写措辞降级** → 结论必须 `not_verified`，措辞不能替代整改。
 
 ## 参考
 
-- 配套：`skills/execute-implement/SKILL.md`、`skills/verify-test/SKILL.md`
-- 借鉴：`reference/vendored-skills/superpowers/skills/requesting-code-review`、`receiving-code-review`（参考基线：Superpowers v6.0.x；已对照 v6.1.1 做增量优化）
+- 配套：`skills/execute-implement/SKILL.md`、`skills/verify-test/SKILL.md`、`skills/verify-release/SKILL.md`（发布/合并安全）
+- 借鉴：`reference/vendored-skills/superpowers/skills/requesting-code-review`、`receiving-code-review`（参考基线：Superpowers v6.0.x；已对照 v6.1.1 / v6.2.0 / v6.3.0 做增量优化：只读审查员、「无法从 diff 验证」裁决）
 - 方法论出处：唯一真源 `docs/AI 编程方法论 v1.2 — 可操作版.md` 第 3.2 节

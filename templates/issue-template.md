@@ -17,6 +17,13 @@
 
 - [ ] 依赖 Issue #___
 
+<!-- P0/P1 Issue：若有外部依赖（法源权利/供应商条款/盲测/部署），登记依赖表。 -->
+<!-- 代码与外部依赖都满足才整体 Verified；否则拆「本地完成」+「外部 pending_external」。 -->
+
+| dependency_type | blocking_level | evidence_required | substitute_allowed | owner | rollback_if_missing |
+|---|---|---|---|---|---|
+| code/source-rights/vendor-terms/blind-test/deployment | hard/soft | 文件/回执/测试/签字 | 是/否 | 责任人 | 关闭入口/quarantine/回到 pending |
+
 ## 验收标准
 
 <!-- 分级语义以 plan-breakdown 为准；边界与错误处理若会阻塞使用，属 P0/P1，不要因为「看起来像边界」就放进 P2 -->

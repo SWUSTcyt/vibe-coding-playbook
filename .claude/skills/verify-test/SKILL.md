@@ -39,6 +39,24 @@ description: 三层测试体系与测试前置。Use when 为功能编写测试�
 
 > **可消费性验收（对外交付的服务额外要求）**：健康检查端点可用（且不依赖业务模块）、错误码语义正确（4xx = 调用方错，5xx = 服务方错）、响应符合 Spec 契约、有版本前缀。具体见 `docs/e2e-verify-guide.md` 的 Web 后端部分。
 
+## 涉及模型 / 外部服务 / 连接器时（按需读取）
+
+写这类功能的测试时，先读 `reference/model-and-connector-guide.md`，落三条（纯前端/CRUD/离线工具不触发）：
+
+- **失败关闭负例**：每个模型/外部依赖至少一条负例，断言 `model_calls == 0`（或外部调用为 0）+ 终态落 `blocked/unverified/no_match/pending_external`，且系统终态/用户文案/审计/存储四态一致；外部返回空/超时/错误 schema/部分结果不静默成功。
+- **连接器默认断网**：普通测试用进程级 autouse fixture 关闭所有可选 connector；真实 E2E 靠 `RUN_REAL_*` + 独立标记；回执只留白名单字段。操作清单见 `templates/connector-isolation-checklist.md`。
+- **质量数据四层隔离**：development fixture / public regression / calibration / blind set，状态不可混写，调参不得读 blind set；质量报告写样本量+基线+通过率+失败项+适用范围，合成/单题打「不可推广」。
+
+## 可证伪测试（对齐 Superpowers v6.2.0 `writing-good-tests`）
+
+测试要能真正失败才有价值。写测试时：
+
+- **命名「会让这条测试失败的生产改动」**——说不出来，这条测试就没在验行为。
+- **独立于被测代码推导预期**——预期值不能从被测实现里抄，否则测试只是复述实现。
+- **收尾做一次变异检查**——手动改坏一处实现，确认测试确实变红。
+- 避免两个假证伪陷阱：**string-presence trap**（对脚本/prompt/skill 做 grep 式字符串断言——可观测对象是行为，不是文本）；**change-detector trap**（断言一个常量，改坏了也保护不了任何东西）。
+- 平凡代码和人类散文不必强写测试；一旦写，就按上面的可证伪标准写。
+
 ## 产出
 
 - 三层测试代码 + 测试计划（场景 + 预期；Issue 声明了 AC 时标注场景 ↔ AC 的对应关系）
@@ -54,10 +72,16 @@ description: 三层测试体系与测试前置。Use when 为功能编写测试�
 - **编码后才补测试** → 测试被实现带偏，沦为「描述现状」而非「定义预期」。坚持前置。
 - **用「构建通过 / 服务起得来」冒充「功能不回退」** → 构建烟雾和起服务只能证明能加载，证明不了业务链路。关键路径必须真实端到端走一遍；跑不了就标 blocked，别给假绿灯。
 - **把 L1 冒烟当功能验证** → 本地冒烟/健康检查只证明服务存活，不等于端到端功能可用。
+- **只测「有证据能产出」，不测「无证据不产出」** → 危险错误恰恰是证据不足却继续回答。每个模型/外部依赖都要有失败关闭负例（`model_calls == 0` + 终态正确）。
+- **调参时读了盲测集答案** → 盲测边界失效，质量结论不可信。blind set 首次运行即消费，调参只能用 calibration。
+- **用单题/合成样本宣称质量通过** → 样本不代表业务分布。质量报告写清样本量与适用范围，合成样本打「不可推广」。
+- **对脚本/prompt 做 grep 式断言充当测试** → 断言文本存在不等于验证行为（string-presence trap）。测行为，并能说出「什么生产改动会让它失败」。
 
 ## 参考
 
 - 配套：`skills/execute-implement/SKILL.md`、`skills/verify-review/SKILL.md`
+- 涉及模型/外部服务/连接器：`reference/model-and-connector-guide.md`（失败关闭负例 + 连接器隔离 + 四层数据隔离）
 - E2E 验证指南：`docs/e2e-verify-guide.md`（按项目类型的填写指引 + 骨架流程）
-- 借鉴：`reference/vendored-skills/superpowers/skills/test-driven-development`（参考基线：Superpowers v6.0.x；已对照 v6.1.1 做增量优化）
+- 借鉴：`reference/vendored-skills/superpowers/skills/test-driven-development`、`writing-good-tests`（参考基线：Superpowers v6.0.x；已对照 v6.1.1 / v6.2.0 做增量优化）
+- 连接器隔离清单：`templates/connector-isolation-checklist.md`
 - 方法论出处：唯一真源 `docs/AI 编程方法论 v1.2 — 可操作版.md` 第 3.1 / 3.3 节

@@ -13,6 +13,75 @@
 
 ---
 
+### 2026-08-21 用户使用路径与宏观价值反馈
+
+- **层：** Plan / Observe
+- **现象：**（用户反馈）真实项目开发到测试期才发现界面主次错位——核心问答与对话记录挤在一屏，而非 GPT 式「核心居主、历史入侧栏」。根因是规划只想「怎么拆怎么实现」，没设计「用户怎么用」。另外阶段完成后只反馈「issue-xx 实现了什么功能」，缺「从用户视角现在能走通哪条使用路径」的宏观反馈。
+- **根因：** plan-spec 无面向终端用户的使用路径/信息架构环节；PR/Milestone 反馈只到技术功能层，没到用户可完成路径层。
+- **改进动作：**
+  - **前期设计**：`plan-spec` 新增流程步骤 4 与「用户使用路径与信息架构」节（条件触发，仅有 UI 的产品，spike 跳过）——核心任务主线 / 关键路径步骤 / 主次信息布局 / 端到端可验收场景；硬规则「有 UI 缺核心主线+主次布局不得冻结，布局主次停下等用户确认」。`spec-template` 加同名可删小节。
+  - **宏观反馈**：`pr-summary-template` 加「用户视角（本次让用户能做什么）」一行；`milestone-template` 加「用户使用路径增量」小节；`observe-session` PR Summary 注明必填用户视角、Milestone 完成时输出使用路径增量并映射回 Spec 步骤。
+  - **来源挂钩**：`plan-breakdown` 拆 Milestone 补「标注用户使用路径增量（映射 Spec 关键路径步骤）」。
+  - 全部轻量内联，不新增 skill、不新增参考文档、不引入 persona/线框图；无 UI 项目条件跳过、小节可删，不受影响。
+- **验证：** sync 8 skill、`--check` 一致。
+- **产出：** 3 skill + 3 模板增量（plan-spec/plan-breakdown/observe-session、spec/pr-summary/milestone 模板），已 sync。
+
+---
+
+### 2026-08-20 skills 瘦身 + 证据合同去法律化 + 任务三档分流
+
+- **层：** Improve / Plan
+- **现象：**（上一条强化后自查 + 用户反馈）上一轮把大量规则内联进 skill 正文，`verify-test` 从 64→114 行、`plan-spec`/`execute-implement` 也明显膨胀；其中「失败关闭/连接器/四层数据/三层不变量」只对「接模型/外部服务」的项目生效，纯前端/CRUD 项目永远不触发却每次被读进上下文，违反铁律 2「信息触手可及，而非全部塞入」。另外证据合同模板示例带法律味（法规/条号/法律结论），让非法律项目误判为项目专属。
+- **根因：** 通用规则与「仅特定项目类型生效」的重规则混在同一常驻正文；示例用了领域词汇而非中性表达。
+- **改进动作：**
+  - **去法律化**：`templates/evidence-contract-template.md` 示例1 改为「权威来源逐字核验类（RAG 引用/标准条款/版本化文档）」+ 适用域说明；示例2「确定法律结论」→「确定性结论」。模式通用（RAG 引用核验、RFC/ISO、药品说明书、监管文件），不再像项目专属。
+  - **瘦身**：新建 `reference/model-and-connector-guide.md` 收纳失败关闭门禁+负例、三层不变量、四层数据隔离、连接器协议；`execute-implement`（113→102）与 `verify-test`（114→88）删除这些整段，只留触发指引 +「详见 guide」。纯通用项（可证伪测试、能力矩阵、证据资格审查、事实/推断分离、发布安全）保持内联。
+  - **修分发隐患**：`scripts/sync-skills.py` 新增扫描并分发/校验被引用的 `reference/*.md`（`--install` 分发到 `<项目>/reference/`，`--check` 校验），顺带修好 `service-refactor-guide.md` 长期未被安装分发的断链隐患（`reference/vendored-skills/` 仍排除）。
+  - **任务三档分流**：`plan-spec`「何时使用」升级为 spike / bounded / architectural 三档，轻任务跳过重仪式，每档都停下等用户确认边界（对齐 Superpowers v6.3.0）。
+  - CONTEXT_INDEX 增 guide 条目；相关 skill「参考」区指向 guide。
+- **验证：** `sync` 8 skill；`--check` 一致；临时目录 `--install` 分发 8 skill + 10 模板 + 3 参考文档 + AGENTS，`--install --check` 一致；脚本 lint 无错。
+- **产出：** 1 份新参考文档 + 2 个 skill 瘦身 + 模板去法律化 + 脚本分发能力增强 + plan-spec 三档分流，已 sync 到 `.cursor`/`.claude`
+
+---
+
+### 2026-08-20 skills 瘦身 + 证据合同去法律化 + 任务三档分流
+
+- **层：** Improve / Plan / Execute
+- **现象：** 上一轮把复盘经验并入后，verify-test 从 64 涨到 114（+78%）、execute-implement 涨到 113，其中「失败关闭/连接器/四层数据/三层不变量」只对"接模型/外部服务"的项目生效，却常驻加载，违反铁律 2「信息触手可及而非全部塞入」；证据合同示例带法律味，非法律项目误以为项目专属不敢用。
+- **根因：** 通用规则与"仅特定项目触发"的重内容混在常驻 skill 正文；示例措辞未去领域化。
+- **改进动作：**
+  - **去法律化**：`templates/evidence-contract-template.md` 示例1 改「权威来源逐字核验类（RAG 引用/标准条款/版本化文档）」+ 适用域说明，示例2「确定法律结论」→「确定性结论」，模式通用（RAG/RFC/药品说明书/监管文件）。
+  - **瘦身**：新建 `reference/model-and-connector-guide.md`（68 行，按需读取），收纳失败关闭门禁+负例、三层不变量、四层数据隔离、连接器协议；`execute-implement`（113→102）、`verify-test`（114→88）删重段改触发指引+指向 guide。通用内联项（可证伪测试、能力矩阵、证据资格审查、事实/推断分离、发布安全）保持不动。
+  - **修分发隐患**：`scripts/sync-skills.py` 新增扫描分发+校验被引用的 `reference/*.md`（`--install` 分发到项目 `reference/`，`--check` 校验），顺带修好 `service-refactor-guide.md` 同样的未分发断链。
+  - **任务三档分流**：`plan-spec`「何时使用」升级为 spike/bounded/architectural 三档，轻任务跳过重仪式，每档停下等用户确认边界（对齐 Superpowers v6.3.0）。
+- **验证：** sync 8 skill、`--check` 一致（skill+模板+参考依赖）；`--install <临时目录>` 分发 10 模板 + 3 参考文档，`--install --check` 一致。
+- **产出：** 1 新参考文档 + 2 skill 瘦身 + 1 模板去法律化 + 脚本分发增强 + plan-spec 分档 + CONTEXT_INDEX，已 sync。
+
+---
+
+### 2026-08-20 证据合同与发布安全强化（基于 Codex 项目复盘 + Superpowers v6.2/6.3）
+
+- **层：** Plan / Execute / Verify / Observe / Improve
+- **现象：**（来自 `pj-legal_assistant` 的 Codex 项目复盘：`docs/retrospectives/2026-08-20-codex-project-retro/`）高风险问题都不是「少写 prompt」，而是信息跨层丢失——证据不足却输出 verified、事实/推断/决定/外部待办混写、模型调用前无失败关闭、外部 connector 污染普通测试、诊断暴露认证头、范围与外部依赖后置暴露、实现完成却未安全发布合并。
+- **根因：** 现有 skills 覆盖流程，但缺「结论算不算数的证据契约」「失败关闭门禁」「凭据/连接器隔离」「发布/合并作为验收阶段」等强制约束与对应测试。
+- **改进动作：**（只沉淀通用规则；中国法律条文、WorkBuddy 配置、合同类型/立场、G1-G3 门禁留在项目侧；未新建 Agently 命名 skill）
+  - **P0-1 证据合同**：新增 `templates/evidence-contract-template.md`（含法源/connector/模型质量/blocked 四示例）；`plan-breakdown` 加「证据合同（P0/P1 前置）」硬规则（缺 source_of_truth/required_fields/fail_closed_state 不得进完成态）；`plan-spec` 加证据等级标注；`verify-review` 加「模型说已核验不能作 source_of_truth」
+  - **P0-2 四类信息分离**：`improve-retro` 记录格式补 decision/external_blocker/next_owner，硬规则「inference/external_blocker 不写进 verified/complete」
+  - **P0-3 失败关闭门禁**：`execute-implement` 加「失败关闭与调用前门禁」（先宿主 preflight 再外部请求、互斥终态、异常可见）；`verify-test` 加「失败关闭负例」（`model_calls==0` + 四态一致断言）
+  - **P0-4 连接器/凭据/诊断隔离**：新增 `templates/connector-isolation-checklist.md`；`verify-test` 加「外部连接器协议」（进程级 autouse 断网、`RUN_REAL_*` 隔离、回执白名单）；`execute-implement` 密钥纪律补「诊断字段白名单」（禁止整体序列化 headers/auth/payload）
+  - **P0-5 发布/合并安全**：新增 `skills/verify-release/SKILL.md`（现状→协作感知→allowlist→可见性→feature branch→secret 扫描→单 PR→合并门禁→合并回执）+ `templates/release-safety-checklist.md`（七种停止点）；含单人 vs 协作场景区分与破坏性操作打字确认
+  - **P1-1** `plan-spec` + `spec-template` 加能力矩阵（verified/planned/unsupported/pending_external）+ 范围变更协议
+  - **P1-2** `plan-breakdown` + `issue-template` 加外部依赖/证据依赖图（dependency_type/blocking_level/evidence_required/substitute_allowed/owner/rollback）
+  - **P1-3** `execute-implement` 加三层不变量（领域/外部契约/宿主状态机）；任务台账改 plan-scoped
+  - **P1-4** `verify-test` 加质量数据四层隔离（fixture/regression/calibration/blind set）+ 可证伪测试规范
+  - **P1-5** `verify-review` 加证据资格审查（真源/逐字回读/分母资格/状态一致/失败在调用前/范围一致/无法从 diff 验证）
+  - **P1-6** 重写 `templates/session-summary-template.md` 为结构化必填字段；`observe-session` 加模板自检（`template_missing_fallback`）与 `incomplete_observation` 规则
+  - **工具/校验**：`scripts/sync-skills.py --check` 增 session summary 必填字段校验（正负路径已验证）；clone `superpowers@6.3.0` 到 vendored 参考；`docs/superpowers-v6-analysis.md` 补 v6.2/6.3 通用增量；更新 CONTEXT_INDEX/AGENTS/PLAN
+- **明确不做（本轮）：** P2 问题指纹经验库、milestone 自动对话索引；不新建 Agently 命名 skill；不复制客户内容/真实 token/WorkBuddy 原始结果/未脱敏法律文件
+- **产出：** 8 个 skill（新增 verify-release）+ 3 个新模板 + 3 个模板更新 + 脚本校验增强 + Superpowers 参考更新，已 sync 到 `.cursor`/`.claude`（8 个 skill，check 一致）
+
+---
+
 ### 2026-07-26 plan-spec 补前置分解步骤（Spec 地图）
 
 - **层：** Plan

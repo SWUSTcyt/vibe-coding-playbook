@@ -22,7 +22,7 @@ description: 任务归约拆分与验收标准前置。Use when 已有 Spec 或�
 ## 流程
 
 1. **拆 Epic** — 每个 Epic = 一个独立功能模块，先拆当前需要的 2-3 个。**若 plan-spec 已出过 Spec 地图，直接沿用：一份子 Spec 对应一个 Epic**，不要重新划一套边界。
-2. **拆 Milestone** — 选第一个 Epic，拆出 Milestone，每个含：起始条件、交付物、验收标准。只细化前 1-2 个。用 `templates/milestone-template.md`。
+2. **拆 Milestone** — 选第一个 Epic，拆出 Milestone，每个含：起始条件、交付物、验收标准。只细化前 1-2 个。用 `templates/milestone-template.md`。**有 UI 的产品，每个 Milestone 标注它交付的「用户使用路径增量」**（映射 Spec 的关键路径步骤），让阶段完成后能从用户视角反馈。
 3. **拆 Issue** — 选第一个 Milestone，拆到 Issue 级别。每个 Issue 含：任务描述、输入/输出、依赖条件、P0-P3 验收标准。用 `templates/issue-template.md`。
 4. **写验收标准（前置）** — 拆 Issue 的同时按 P0-P3 分级写验收标准（见下表），让用户确认/调整。
 5. **维护 Plan Document** — 把当前 Milestone 与 Issue 状态写入 `PLAN.md`（≤500 tokens），用 `templates/plan-document-template.md`。PLAN 只挂**活跃**的 Issue 与 Spec 链接；需求全貌与历史在 `docs/spec/`（索引见 `docs/spec/INDEX.md`），不要让 PLAN 承担 Spec 目录职责。
@@ -50,6 +50,33 @@ description: 任务归约拆分与验收标准前置。Use when 已有 Spec 或�
 | P3 | 锦上添花，可忽略 | 记录不追踪 |
 
 **原则：中途不允许降级。** 做不完就拆 Issue，不降标准。
+
+## 证据合同（P0/P1 Issue 前置）
+
+验收标准回答「要做到什么」，证据合同回答「凭什么算做到了、做不到时停在哪个终态」。二者容易被混为一谈——模型调用成功、候选链接存在、已核验、业务质量通过是四件不同的事。
+
+每个 P0/P1 Issue 至少挂一份证据合同（多条独立结论就挂多份），用 `templates/evidence-contract-template.md`，至少写清：
+
+- `source_of_truth`：结论算数的唯一依据（代码/数据库终态/外部回执/人工签字）——**「模型说已核验」不能作为 source_of_truth**；
+- `required_fields`：判定通过必须齐备的字段（来源版本、逐字引文、样本量等）；
+- `fail_closed_state`：证据不足时的可见终态（`blocked`/`unverified`/`no_match`/`pending_external`），不得静默变成成功。
+
+**硬规则：缺 `source_of_truth`、`required_fields` 或 `fail_closed_state` 的 P0/P1 Issue，不得进入除 Planned 外的任何完成态。** 涉及模型/外部服务的结论必须写 `model_call_allowed_when`（宿主门禁通过后的条件）。
+
+## 外部依赖 / 证据依赖图（每个 P0/P1 Issue）
+
+代码写完 ≠ Issue 完成。外部条件（法源权利、供应商条款、律所盲测、部署资源）若不在 Issue 开始时登记为「前置依赖 + 退出条件」，就会在代码完成后才暴露，把总进度误显示为完成。每个 P0/P1 Issue 除验收标准外，登记依赖表：
+
+| 字段 | 取值示例 |
+|---|---|
+| `dependency_type` | code / source-rights / vendor-terms / blind-test / deployment |
+| `blocking_level` | hard（缺则不能验收）/ soft（可先做骨架） |
+| `evidence_required` | 文件 / 回执 / 测试 / 人工签字 |
+| `substitute_allowed` | 是否允许合成样本替代（是→标「不可推广」） |
+| `owner` | 项目负责人 / 律师 / 供应商 / DevOps |
+| `rollback_if_missing` | 关闭入口 / 保持 quarantine / 回到 pending |
+
+**硬规则：只有代码与外部依赖都满足，Issue 才能整体标 `Verified`。** 否则拆成两个状态——「本地实现完成」+「外部验收 pending_external」，缺的依赖自动生成 `pending_external`，不让总进度显示为完成。
 
 ## 产出
 

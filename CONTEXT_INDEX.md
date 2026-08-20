@@ -15,6 +15,7 @@
 | 跨工具入口（铁律+五层+skill 指引） | `AGENTS.md` |
 | SKILL.md 写作规范 | `reference/SKILL-writing-guide.md` |
 | 服务化重构参考（契约/分层/关注点剥离） | `reference/service-refactor-guide.md` |
+| 模型/外部服务/连接器工程指南（失败关闭/三层不变量/连接器隔离/四层数据） | `reference/model-and-connector-guide.md` |
 | 参考用第三方 skill | `reference/vendored-skills/`（vendored，仅借鉴） |
 
 ## 模板
@@ -28,6 +29,9 @@
 | Milestone 定义 | `templates/milestone-template.md` |
 | PR 验收摘要 | `templates/pr-summary-template.md` |
 | Session 摘要 | `templates/session-summary-template.md` |
+| 证据合同（P0/P1 结论真源+失败关闭） | `templates/evidence-contract-template.md` |
+| 外部连接器/凭据隔离清单 | `templates/connector-isolation-checklist.md` |
+| 发布安全清单 | `templates/release-safety-checklist.md` |
 
 ## 流程 Skill（真源，按阶段调用）
 
@@ -38,6 +42,7 @@
 | Execute：开发 | `skills/execute-implement/SKILL.md` |
 | Verify：测试 | `skills/verify-test/SKILL.md` |
 | Verify：审查验收 | `skills/verify-review/SKILL.md` |
+| Verify：发布/合并安全 | `skills/verify-release/SKILL.md` |
 | Observe：可观测/降质检测 | `skills/observe-session/SKILL.md` |
 | Improve：提炼改进 | `skills/improve-retro/SKILL.md` |
 
