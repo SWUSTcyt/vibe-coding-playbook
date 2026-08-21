@@ -1,11 +1,11 @@
-# Plan Document: 人读导出与口径分离
+# Plan Document: v0.5.0
 
 > 约束：< 500 tokens。这是**当前运行状态**的唯一真源，只写当前 Milestone 与活跃项。
 > 执行以 `skills/` 为准。改进历史见 `docs/improvements/CHANGELOG.md`。
 
 ## 目标
 
-无活跃开发 Issue。人读方法论已从 skills 导出；v1.2 迁入稿已冻结归档。
+v0.5.0 已发布。无活跃开发 Issue。
 
 ## 活跃 Spec
 
