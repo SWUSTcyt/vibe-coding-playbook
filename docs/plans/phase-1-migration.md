@@ -21,6 +21,6 @@
 ## 技术决策（不可回调）
 
 - 文档格式：Markdown（UTF-8）
-- 原文保留：`docs/AI 编程方法论 v1.2 — 可操作版.md`
+- 原文已冻结：`docs/archive/AI 编程方法论 v1.2 — 可操作版.md`（最新人读导出见 `docs/AI 编程方法论 — 人读版.md`）
 - ~~分层副本：`docs/methodology/01-06.md`~~（M2/M3 已删除，与真源重复；改由 `skills/` + `AGENTS.md` 承载可执行版本）
 - 信息索引：`CONTEXT_INDEX.md` 作为 Agent 入口

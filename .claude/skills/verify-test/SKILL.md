@@ -84,4 +84,3 @@ description: 三层测试体系与测试前置。Use when 为功能编写测试�
 - E2E 验证指南：`docs/e2e-verify-guide.md`（按项目类型的填写指引 + 骨架流程）
 - 借鉴：`reference/vendored-skills/superpowers/skills/test-driven-development`、`writing-good-tests`（参考基线：Superpowers v6.0.x；已对照 v6.1.1 / v6.2.0 做增量优化）
 - 连接器隔离清单：`templates/connector-isolation-checklist.md`
-- 方法论出处：唯一真源 `docs/AI 编程方法论 v1.2 — 可操作版.md` 第 3.1 / 3.3 节

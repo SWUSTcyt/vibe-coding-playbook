@@ -148,5 +148,4 @@ with urllib.request.urlopen("http://localhost:PORT/health", timeout=10) as r:
 
 ## 参考
 
-- 核心文档硬规则：`docs/AI 编程方法论 v1.2 — 可操作版.md` §3.1
 - 测试三层 skill：`skills/verify-test/SKILL.md`

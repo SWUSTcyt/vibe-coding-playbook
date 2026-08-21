@@ -18,4 +18,4 @@ tools: Read, Grep, Glob, Bash
 
 核心：标准不滑坡，绝不说"差不多了合吧"。
 
-详见唯一真源 `docs/AI 编程方法论 v1.2 — 可操作版.md` 第 3.2 节。
+流程见 `skills/verify-review`。

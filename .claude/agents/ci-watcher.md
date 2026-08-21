@@ -15,4 +15,4 @@ tools: Read, Grep, Glob, Bash
 
 本地/单人场景：CI 退化为本地测试/lint 脚本（如 `pytest`、`ruff`）。
 
-详见唯一真源 `docs/AI 编程方法论 v1.2 — 可操作版.md` 第三章。
+流程见 `skills/verify-test`（L1 / blocked 判定）；发布相关见 `skills/verify-release`。
