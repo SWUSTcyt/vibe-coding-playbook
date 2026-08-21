@@ -15,4 +15,4 @@ tools: Read, Grep, Glob, Edit, Write, Bash
 - P0 无法满足时停止并上报，不自行降低标准
 - 中文注释 UTF-8 避免乱码；优先 async/await；完善错误处理；改既有函数先理解原逻辑再改
 
-详见唯一真源 `docs/AI 编程方法论 v1.2 — 可操作版.md` 第二、三章。
+流程见 `skills/execute-implement`、`skills/verify-test`、`skills/verify-review`。

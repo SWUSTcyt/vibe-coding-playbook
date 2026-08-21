@@ -76,4 +76,3 @@ description: 问题记录与定期总结提炼。Use when 同一问题反复出�
 - 记录文件：`docs/issues-log.md`、`docs/improvements/CHANGELOG.md`
 - 上一步：`skills/observe-session/SKILL.md`
 - 写 Skill 规范：`reference/SKILL-writing-guide.md`
-- 方法论出处：唯一真源 `docs/AI 编程方法论 v1.2 — 可操作版.md` 第五章（Improve）

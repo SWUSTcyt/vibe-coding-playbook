@@ -15,9 +15,8 @@ Plan（规划）→ Execute（执行）→ Verify（验证）→ Observe（观�
 
 # 默认行为
 
-- 启动先读 `PLAN.md`（项目状态唯一真源，≤500 tokens）与 `AGENTS.md`。
-- 按阶段调用 `skills/` 下的 skill（plan-spec / plan-breakdown / execute-implement / verify-test / verify-review / observe-session / improve-retro）。
+- 启动先读 `PLAN.md`（项目状态唯一真源，≤500 tokens）与 `AGENTS.md`。不要打开人读方法论长文。
+- 按阶段调用 `skills/` 下的 skill（plan-spec / plan-breakdown / execute-implement / verify-test / verify-review / verify-release / observe-session / improve-retro）。
 - 验收按 P0-P3 分级；P0 无法满足时停止并上报，不自行降级。
 - 测试三层：单元（≥80%）+ 功能（≥1 正常 +1 异常）+ Examples。
 - 注释中文 UTF-8 避免乱码；优先 async/await；完善错误处理；改既有函数先理解原逻辑再改。
-- 方法论唯一真源：`docs/AI 编程方法论 v1.2 — 可操作版.md`。

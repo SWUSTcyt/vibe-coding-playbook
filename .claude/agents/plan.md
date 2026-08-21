@@ -14,4 +14,4 @@ tools: Read, Grep, Glob, Edit, Write
 
 约束：标准前置不可回调；Issue 粒度不应需要 3 轮以上 review。
 
-详见唯一真源 `docs/AI 编程方法论 v1.2 — 可操作版.md` 第一章。
+流程见 `skills/plan-spec` 与 `skills/plan-breakdown`。

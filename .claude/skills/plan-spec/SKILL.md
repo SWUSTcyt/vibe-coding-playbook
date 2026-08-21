@@ -243,4 +243,3 @@ docs/spec/
 
 - 模板：`templates/spec-template.md`、`templates/spec-index-template.md`
 - 下一步：`skills/plan-breakdown/SKILL.md`（把 Spec 拆成 Epic → Milestone → Issue）
-- 方法论出处：唯一真源 `docs/AI 编程方法论 v1.2 — 可操作版.md` 第 1.1 节

@@ -5,12 +5,12 @@
 
 ## 方法论
 
-> 唯一真源（Single Source of Truth）：`docs/AI 编程方法论 v1.2 — 可操作版.md`（人读完整版）。
-> 给 Agent 用的可执行版本已落为 `skills/` 与 `AGENTS.md`，不再维护分层副本。
+> 执行以 `skills/` 与 `AGENTS.md` 为准。启动只读这两处 + `PLAN.md`，按阶段读 skill。
 
 | 需要什么 | 读这个 |
 |---|---|
-| 完整方法论（唯一真源，人读） | `docs/AI 编程方法论 v1.2 — 可操作版.md` |
+| 人读导出（Agent 勿打开） | `docs/AI 编程方法论 — 人读版.md`。skills 的导出物，给人看；发版后对照 CHANGELOG 可选更新，绝不反向约束 skills |
+| 历史起源（冻结） | `docs/archive/AI 编程方法论 v1.2 — 可操作版.md`。飞书迁入稿，不再更新 |
 | 总览 & 铁律 & 速览表 | `README.md` |
 | 跨工具入口（铁律+五层+skill 指引） | `AGENTS.md` |
 | SKILL.md 写作规范 | `reference/SKILL-writing-guide.md` |

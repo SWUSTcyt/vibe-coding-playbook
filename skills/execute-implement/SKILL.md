@@ -98,4 +98,3 @@ description: 对照 Issue 与验收标准开发。Use when 一个 Issue 被分�
 - 涉及模型/外部服务/连接器：`reference/model-and-connector-guide.md`（失败关闭门禁 + 三层不变量 + 连接器隔离）
 - 配套：`skills/verify-test/SKILL.md`、`skills/verify-review/SKILL.md`
 - 借鉴：`reference/vendored-skills/superpowers/skills/test-driven-development`、`subagent-driven-development`（参考基线：Superpowers v6.0.x；已对照 v6.1.1 做增量优化）
-- 方法论出处：唯一真源 `docs/AI 编程方法论 v1.2 — 可操作版.md` 第 2.1 / 2.3 / 2.6 / 3.3 节

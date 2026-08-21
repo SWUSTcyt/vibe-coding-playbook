@@ -108,4 +108,3 @@ AC 编号只在单份 Spec 内唯一，所以表头要写清属于哪份 Spec；
 
 - 配套：`skills/execute-implement/SKILL.md`、`skills/verify-test/SKILL.md`、`skills/verify-release/SKILL.md`（发布/合并安全）
 - 借鉴：`reference/vendored-skills/superpowers/skills/requesting-code-review`、`receiving-code-review`（参考基线：Superpowers v6.0.x；已对照 v6.1.1 / v6.2.0 / v6.3.0 做增量优化：只读审查员、「无法从 diff 验证」裁决）
-- 方法论出处：唯一真源 `docs/AI 编程方法论 v1.2 — 可操作版.md` 第 3.2 节

@@ -15,4 +15,4 @@ tools: Read, Grep, Glob
 
 触发：不确定技术选型、需了解代码结构、需第三方信息、同一问题反复失败 ≥2 次。
 
-详见 `skills/` 与唯一真源 `docs/AI 编程方法论 v1.2 — 可操作版.md` 第 2.2 节。
+只调研不写代码。需要对照开发约定时读 `skills/execute-implement`。

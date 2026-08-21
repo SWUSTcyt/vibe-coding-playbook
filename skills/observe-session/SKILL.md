@@ -65,4 +65,3 @@ description: 可观测性与模型降质检测。Use when 一次开发会话结�
 
 - 模板：`templates/session-summary-template.md`、`templates/pr-summary-template.md`
 - 下一步：`skills/improve-retro/SKILL.md`（把记录提炼成规则/新 skill）
-- 方法论出处：唯一真源 `docs/AI 编程方法论 v1.2 — 可操作版.md` 第四章（Observe）

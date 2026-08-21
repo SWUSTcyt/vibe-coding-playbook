@@ -1,33 +1,33 @@
-# Plan Document: v0.4 安装闭环与治理瘦身
+# Plan Document: 人读导出与口径分离
 
 > 约束：< 500 tokens。这是**当前运行状态**的唯一真源，只写当前 Milestone 与活跃项。
-> 方法论全文见 `docs/AI 编程方法论 v1.2 — 可操作版.md`；改进历史见 `docs/improvements/CHANGELOG.md`。
+> 执行以 `skills/` 为准。改进历史见 `docs/improvements/CHANGELOG.md`。
 
 ## 目标
 
-修复 playbook 安装/同步断链，并以最小增量补上 Spec 生命周期、轻量 AC 关联与外部写操作授权约束。
+无活跃开发 Issue。人读方法论已从 skills 导出；v1.2 迁入稿已冻结归档。
+
+## 活跃 Spec
+
+（无）
 
 ## 活跃 Issue
 
-| Issue | P0 摘要 | 状态 |
+| Issue | P0 摘要 | 依赖 |
 |---|---|---|
-| 0 安装闭环 | `--install` 装齐 skill+模板；`--check` 查内容漂移与模板缺失 | done |
-| 0.5 语义修复 | P0-P3 语义一致；PLAN 定位为当前运行状态真源 | done |
-| 1' Spec 生命周期 | Draft/Frozen/Verified/Superseded + parent 字段 | done |
-| 2' 轻量 AC 关联 | Spec 可编号 AC，Issue 可声明 implements/accepts | done |
-| 3' 授权与 retro 分型 | 外部写操作分权；retro 分事实/推断/建议/限制 | done |
+| — | 无 | — |
 
 ## 已确定的技术决策
 
-- Skill 真源只有 `skills/`，工具目录为副本，靠 `scripts/sync-skills.py` 生成
-- 安装到项目必须同时分发 `templates/`，否则 skill 引用断链
+- 执行真源只有 `skills/`；工具目录是副本
+- `--install` 同时分发模板和被引用的 `reference/*.md`
+- 人读导出：`docs/AI 编程方法论 — 人读版.md`（Agent 勿读，不反向约束 skills）
 
 ## 不做的事
 
 - 不做 REQ→AC→Issue→Test 全链路机器门禁、不引入 `traceability.yaml`
 - 不做 token/返工率自动统计
-
-> 注：原「不新增 release-publish skill」已随复盘 P0-5 调整——新增 `verify-release`（发布/合并安全 + 协作感知），见 `docs/improvements/CHANGELOG.md`。
+- 不把人读长文写入 Agent 启动路径
 
 ## 验收分级
 

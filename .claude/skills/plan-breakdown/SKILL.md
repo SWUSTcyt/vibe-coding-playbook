@@ -103,4 +103,3 @@ description: 任务归约拆分与验收标准前置。Use when 已有 Spec 或�
 - 重构参考：`reference/service-refactor-guide.md`（服务化重构的关注点剥离案例）
 - 上一步：`skills/plan-spec/SKILL.md`
 - 下一步：`skills/execute-implement/SKILL.md`
-- 方法论出处：唯一真源 `docs/AI 编程方法论 v1.2 — 可操作版.md` 第 1.2 / 1.3 / 1.4 节
