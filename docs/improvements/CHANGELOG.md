@@ -13,6 +13,15 @@
 
 ---
 
+### 2026-08-21 发布 v0.5.0
+
+- **层：** Improve
+- **现象：** v0.4.0 之后已有证据合同、verify-release、瘦身、用户路径、人读/执行分离，README 仍写「master 未打 tag」。
+- **改进动作：** 打 tag `v0.5.0`，release notes 见 `docs/release-notes/evidence-release-human-v0.5.0.md`。
+- **产出：** GitHub Release v0.5.0。
+
+---
+
 ### 2026-08-21 人读导出换路径，v1.2 迁入稿归档
 
 - **层：** Improve
