@@ -45,6 +45,7 @@ reference/
   SKILL-writing-guide.md             # SKILL.md 写作规范
   service-refactor-guide.md          # 服务化重构参考（契约/分层/关注点剥离）
   model-and-connector-guide.md       # 模型/外部服务/连接器（失败关闭、隔离，按需读取）
+  agent-design-guide.md              # 业务 Agent 方案（控制方式/记忆/知识库召回，Spec 冻结前按需读取）
   vendored-skills/                   # 第三方参考 skill（gitignore，仅本地借鉴）
 examples/                            # 端到端示例
 CONTEXT_INDEX.md                     # Agent 信息入口
