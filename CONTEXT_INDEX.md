@@ -16,6 +16,7 @@
 | SKILL.md 写作规范 | `reference/SKILL-writing-guide.md` |
 | 服务化重构参考（契约/分层/关注点剥离） | `reference/service-refactor-guide.md` |
 | 模型/外部服务/连接器工程指南（失败关闭/三层不变量/连接器隔离/四层数据） | `reference/model-and-connector-guide.md` |
+| 业务 Agent 方案（控制方式/记忆/知识库召回/工具/用户路径；Spec 冻结前按需） | `reference/agent-design-guide.md` |
 | 参考用第三方 skill | `reference/vendored-skills/`（vendored，仅借鉴） |
 
 ## 模板

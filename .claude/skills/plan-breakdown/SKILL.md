@@ -21,16 +21,31 @@ description: 任务归约拆分与验收标准前置。Use when 已有 Spec 或�
 
 ## 流程
 
-1. **拆 Epic** — 每个 Epic = 一个独立功能模块，先拆当前需要的 2-3 个。**若 plan-spec 已出过 Spec 地图，直接沿用：一份子 Spec 对应一个 Epic**，不要重新划一套边界。
+1. **拆 Epic** — 先确认依据的 Spec 已是 Frozen；仍是 Draft 就回 plan-spec 定稿。每个 Epic = 一个独立功能模块，先拆当前需要的 2-3 个。**若 plan-spec 已出过 Spec 地图，直接沿用：一份子 Spec 对应一个 Epic**，不要重新划一套边界。
 2. **拆 Milestone** — 选第一个 Epic，拆出 Milestone，每个含：起始条件、交付物、验收标准。只细化前 1-2 个。用 `templates/milestone-template.md`。**有 UI 的产品，每个 Milestone 标注它交付的「用户使用路径增量」**（映射 Spec 的关键路径步骤），让阶段完成后能从用户视角反馈。
-3. **拆 Issue** — 选第一个 Milestone，拆到 Issue 级别。每个 Issue 含：任务描述、输入/输出、依赖条件、P0-P3 验收标准。用 `templates/issue-template.md`。
-4. **写验收标准（前置）** — 拆 Issue 的同时按 P0-P3 分级写验收标准（见下表），让用户确认/调整。
-5. **维护 Plan Document** — 把当前 Milestone 与 Issue 状态写入 `PLAN.md`（≤500 tokens），用 `templates/plan-document-template.md`。PLAN 只挂**活跃**的 Issue 与 Spec 链接；需求全貌与历史在 `docs/spec/`（索引见 `docs/spec/INDEX.md`），不要让 PLAN 承担 Spec 目录职责。
-6. **确认 Spec 已 Frozen** — 拆分依据的 Spec 应处于 Frozen 状态；仍是 Draft 时先回 plan-spec 定稿，避免边拆边改。
+3. **拆 Issue** — 选第一个 Milestone，拆到 Issue 级别。每个 Issue 含：任务描述、输入/输出、依赖条件、P0-P3 验收标准。用 `templates/issue-template.md`。计划只记决策，见下方「计划记决策，不写实现」。
+4. **写验收标准（前置）** — 拆 Issue 的同时按 P0-P3 分级写验收标准（见下表），并补上「规格未写、合理用户会踩」的失败。让用户确认/调整。
+5. **停下等确认** — 把拆分交给用户看。用户确认这份拆分之前，不得进入 execute-implement。Spec 已冻结 ≠ 实现计划已被看过。
+6. **维护 Plan Document** — 把当前 Milestone 与 Issue 状态写入 `PLAN.md`（≤500 tokens），用 `templates/plan-document-template.md`。PLAN 只挂**活跃**的 Issue 与 Spec 链接；需求全貌与历史在 `docs/spec/`（索引见 `docs/spec/INDEX.md`），不要让 PLAN 承担 Spec 目录职责。
 
 ## Issue 粒度黄金法则
 
 如果一个 Issue 需要 **3 轮以上 review** 才能合入，就是太大了，必须再拆。
+
+## 计划记决策，不写实现
+
+Issue 写实现者自己决定不了的东西：改哪些文件、接口签名、规格里钉死的值、测试要断言什么。函数体、大段示例代码留给 execute-implement。
+
+- 计划比它所拆的 Spec 长出很多，或大半是代码，就是把实现写进了计划，要改回签名、断言和文件路径。
+- 用户确认这份拆分之前，不得开始写生产代码。
+
+## 规格未写、合理用户会踩的失败
+
+规格只写必须做什么，不会把每种输入列全。没写到，不等于这种输入可以崩、答错或被当成成功。每个 Issue 从该规格已经承诺的能力里，最多列 5 条使用者真会碰到、但原文没点名的情况：什么输入、合理用户期望什么、落到哪条测试。检查过、没有这类情况，写一行「无（已检查）」；表格空着等于没做。
+
+能从现有规格推出来的才算。规格写的是审阅，不要因此加「起草整份合同」——那是范围变更，回 plan-spec。
+
+Spec 里有「Agent 方案」时，Issue 和上面这些失败必须能指回其中某一条决定（例如「改条件后的查询使用新状态」）。方案里写了不需要的能力，就不拆对应的实现任务。
 
 ## 重构类任务的拆分范式：按关注点逐个剥离
 
@@ -96,6 +111,9 @@ description: 任务归约拆分与验收标准前置。Use when 已有 Spec 或�
 - **Plan Document 写成大杂烩** → 超出 500 tokens 就失去「快速对齐」价值。细节交给 Issue。
 - **重构一把梭** → 一个 Issue 同时改配置、prompt、结构、协议，出错无法定位。按关注点逐个剥离，每步可运行。
 - **无视 Spec 地图另划 Epic** → Epic 边界与子 Spec 对不上，验收找不到依据。有地图就一份子 Spec 一个 Epic。
+- **把函数体写进 Issue** → 计划变成实现稿，评审看的是代码而不是决策。只留文件、签名、规格值和断言。
+- **Spec 一冻结就写代码** → 用户还没看过这份拆分。确认拆分后再进入 execute-implement。
+- **规格没点名的输入就当不用测** → 使用者仍会这么用。先列入最多 5 条合理预期失败；推不出的新功能不要塞进来。
 
 ## 参考
 
