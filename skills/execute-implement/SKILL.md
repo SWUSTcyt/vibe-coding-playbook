@@ -20,7 +20,7 @@ description: 对照 Issue 与验收标准开发。Use when 一个 Issue 被分�
 
 ## 流程
 
-1. **读 Issue 与验收标准** — 明确 P0/P1 必须满足项、输入/输出、依赖。
+1. **读 Issue 与验收标准** — 明确 P0/P1 必须满足项、输入/输出、依赖。用户尚未确认这份拆分时停下来，不写生产代码。
 2. **先出测试计划** — 编码前列出测试场景 + 预期结果，交用户确认（见 verify-test）。
 3. **按 TDD 实现** — 先写失败测试，再写最小实现使其通过，再重构。参考 `reference/vendored-skills/superpowers/skills/test-driven-development`。
 4. **补功能测试 + 使用示例** — 至少 1 正常 + 1 异常；2-3 个实际用法示例。
