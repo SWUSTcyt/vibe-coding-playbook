@@ -132,6 +132,8 @@ Spec 里的 P0/P1 验收项，凡是「结论算不算数取决于外部证据�
 
 **硬规则：** 有 UI 的产品，Spec 里没有「核心任务主线 + 主/次信息布局」不得冻结。布局主次是产品决策，要停下等用户确认，别默认堆在一屏。
 
+**布局有取舍时先交可点击原型**（细则见 `reference/ui-frontend-guide.md`）：只给一个入口文件并写版本号，覆盖正常/空/加载/失败；用户提布局意见后，先按「页面、位置、控件、改什么、不改什么」复述再动手。Spec 里记版本、确认范围、用户原话，以及未展示的页面怎么继承。原型确认只冻结视觉与交互，不改变能力矩阵的实现状态。改文案、调间距这类小改动不做原型。
+
 ## Agent 方案（要做 Agent 时才写，与功能写在同一份 Spec）
 
 要做的东西会调用模型，并且会多步执行、调工具、跨轮保留信息，或回答依赖外部资料（知识库/检索，哪怕只检索一次）时，冻结前读 `reference/agent-design-guide.md`，在 Spec 里写完这些项：控制方式、谁做决定、工具与业务技能、上下文与记忆、知识库与召回、运行边界、用户/调用方路径。每一项写选什么、为什么不选旁边那个；不需要就写「不需要」。答案依赖外部资料时，「知识库与召回」不能空着：业务库存哪、是否用向量库、按什么切、先精确匹配还是先检索。没有知识库就写「不需要」。
@@ -262,4 +264,5 @@ docs/spec/
 
 - 模板：`templates/spec-template.md`、`templates/spec-index-template.md`
 - 要做 Agent 时：`reference/agent-design-guide.md`
+- 有终端界面时：`reference/ui-frontend-guide.md`
 - 下一步：`skills/plan-breakdown/SKILL.md`（把 Spec 拆成 Epic → Milestone → Issue）

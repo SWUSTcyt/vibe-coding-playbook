@@ -47,6 +47,14 @@ description: 三层测试体系与测试前置。Use when 为功能编写测试�
 - **连接器默认断网**：普通测试用进程级 autouse fixture 关闭所有可选 connector；真实 E2E 靠 `RUN_REAL_*` + 独立标记；回执只留白名单字段。操作清单见 `templates/connector-isolation-checklist.md`。
 - **质量数据四层隔离**：development fixture / public regression / calibration / blind set，状态不可混写，调参不得读 blind set；质量报告写样本量+基线+通过率+失败项+适用范围，合成/单题打「不可推广」。
 
+## 有终端界面时（按需读取）
+
+写有界面功能的测试计划时，先读 `reference/ui-frontend-guide.md`，落三条（纯后端/库/CLI 不触发）：
+
+- **在真实产品入口验收**：视觉与交互验收对象是产品构建按部署方式启动后的入口，不是设计预览或开发服务器。关键路径走宽屏、常规桌面、窄屏、短视口，加长列表和长正文；角色导航不同就每个角色各走一遍。测试计划标出哪些项自动断言、哪些要人看。
+- **等应用就绪，先分诊**：等应用自己的就绪信号，不用页面 load / `document.complete` 代替。失败先判断是测试装置（选择器、等待条件、存储注入抢跑）还是产品问题；装置问题只改测试，不记成产品缺陷。
+- **测试凭据可撤销**：在真实或共享环境登录时，测试产生的会话在 finally 里用进程内保留的凭据撤销（正常、失败、超时都要走到），跑完按服务端签发记录核对本轮无残留。
+
 ## 可证伪测试（对齐 Superpowers v6.2.0 `writing-good-tests`）
 
 测试要能真正失败才有价值。写测试时：
@@ -76,11 +84,14 @@ description: 三层测试体系与测试前置。Use when 为功能编写测试�
 - **调参时读了盲测集答案** → 盲测边界失效，质量结论不可信。blind set 首次运行即消费，调参只能用 calibration。
 - **用单题/合成样本宣称质量通过** → 样本不代表业务分布。质量报告写清样本量与适用范围，合成样本打「不可推广」。
 - **对脚本/prompt 做 grep 式断言充当测试** → 断言文本存在不等于验证行为（string-presence trap）。测行为，并能说出「什么生产改动会让它失败」。
+- **只在设计预览或开发服务器上验界面** → 预览的外框和固定宽度会掩盖产品页面的比例、滚动问题，要等用户在真实入口发现。在产品构建上按视口矩阵走关键路径。
+- **测试装置抢跑就改产品代码** → 页面加载完不等于应用初始化完。先换成就绪信号复现，确认是产品问题再改。
 
 ## 参考
 
 - 配套：`skills/execute-implement/SKILL.md`、`skills/verify-review/SKILL.md`
 - 涉及模型/外部服务/连接器：`reference/model-and-connector-guide.md`（失败关闭负例 + 连接器隔离 + 四层数据隔离）
+- 有终端界面：`reference/ui-frontend-guide.md`（真实入口视口矩阵 + 自动/人工划分 + 测试装置与凭据）
 - E2E 验证指南：`docs/e2e-verify-guide.md`（按项目类型的填写指引 + 骨架流程）
 - 借鉴：`reference/vendored-skills/superpowers/skills/test-driven-development`、`writing-good-tests`（参考基线：Superpowers v6.0.x；已对照 v6.1.1 / v6.2.0 做增量优化）
 - 连接器隔离清单：`templates/connector-isolation-checklist.md`
