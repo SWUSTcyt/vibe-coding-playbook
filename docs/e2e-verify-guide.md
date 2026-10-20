@@ -117,6 +117,7 @@ with sync_playwright() as p:
             page.set_viewport_size({"width": width, "height": height})
             page.goto(PRODUCT_URL)
             # 等应用自己的就绪信号，不用 load / document.complete 代替
+            # 下面的选择器只是示例，换成你应用的就绪信号（如账户入口可点、首屏数据已渲染）
             page.locator("button.account:not(:disabled)").wait_for()
 
             # 模拟用户操作
