@@ -67,13 +67,14 @@ cd vibe-coding-playbook
 python scripts/sync-skills.py --install /path/to/your-project
 ```
 
-一条命令装齐四样东西（缺一会断链）：
+一条命令装齐五样东西（缺一会断链）：
 
 | 装什么 | 装到哪 | 说明 |
 |---|---|---|
 | 八个核心 Skill | `<项目>/.cursor/skills/`、`<项目>/.claude/skills/` | Cursor 与 Claude Code 各一份 |
 | Skill 引用的模板 | `<项目>/templates/` | Skill 正文按 `templates/xxx.md` 引用，不装会断链 |
 | Skill 引用的参考文档 | `<项目>/reference/` | 如 `model-and-connector-guide.md`；`vendored-skills/` 不分发 |
+| Skill 引用的共享指南 | `<项目>/docs/` | 只分发白名单里的指南（目前是 `e2e-verify-guide.md`）；`docs/issues-log.md` 等项目自有文件不碰 |
 | `AGENTS.md` | `<项目>/AGENTS.md` | 已存在则跳过；要覆盖加 `--force-agents` |
 
 装完校验一次：
@@ -82,7 +83,7 @@ python scripts/sync-skills.py --install /path/to/your-project
 python scripts/sync-skills.py --install /path/to/your-project --check
 ```
 
-该命令按内容哈希比对 Skill，并扫描 Skill 引用的模板与 `reference/*.md` 是否齐全，有问题返回非 0。
+该命令按内容哈希比对 Skill，以及 Skill 引用的模板、`reference/*.md` 和共享指南：缺失或与本仓库版本不一致都报错并返回非 0，重新 `--install` 即可修复。`AGENTS.md` 归项目所有，不比对内容。
 
 > 装好后按项目实际情况修改 `AGENTS.md` 的「Skill 调用指引」表格，
 > 如有项目级 Skill（如 `understand`、`feature`），补充到表中。
@@ -113,7 +114,7 @@ python scripts/sync-skills.py --project /path/to/your-project
 | 模式 | 源 | 用途 |
 |---|---|---|
 | 默认 | 本仓库 `skills/` | 维护 playbook 自身的工具副本 |
-| `--install` | 本仓库 `skills/` + 被引用的 `templates/` 与 `reference/*.md` | **安装到你的项目**（推荐） |
+| `--install` | 本仓库 `skills/` + 被引用的 `templates/`、`reference/*.md` 与共享指南 | **安装到你的项目**（推荐） |
 | `--project` | 项目自己的 `.claude/skills/` | 项目内两个工具目录互相对齐 |
 
 ## 版本历史

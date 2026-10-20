@@ -13,6 +13,16 @@
 
 ---
 
+### 2026-10-20 安装器补发 E2E 指南，安装检查改为按内容比对
+
+- **层：** Improve
+- **现象：** 法律项目重装 v0.6.0 后自查发现：`verify-test` 引用的 `docs/e2e-verify-guide.md` 不随安装分发，项目留着旧版（没有产品入口、就绪等待、视口检查）；`--install --check` 对模板和参考文档只查文件在不在，旧版文件也报「一致」。
+- **根因：** 安装器只扫描 `templates/` 和 `reference/` 的引用；依赖检查只做存在性检查，内容比对只覆盖 skill。
+- **改进动作：** `sync-skills.py` 新增 `SHARED_DOCS` 白名单，只分发被 skill 引用、由 playbook 维护的 `docs/` 指南（目前 `e2e-verify-guide.md`），不碰 `docs/issues-log.md` 等项目自有文件。`--install --check` 对模板、参考文档、共享指南都按内容哈希比对，不一致报「内容过旧」并返回非 0。
+- **产出：** 脚本修改 + README 安装说明更新。未改 skill。
+
+---
+
 ### 2026-10-20 UI/前端：原型评审、真实入口验收、检查运行位置与索引维护
 
 - **层：** Plan / Verify / Observe

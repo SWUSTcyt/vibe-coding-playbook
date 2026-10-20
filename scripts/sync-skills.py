@@ -12,7 +12,12 @@
    - `skills/`     -> `<项目>/.cursor/skills/`、`<项目>/.claude/skills/`
    - `templates/`  -> `<项目>/templates/`（skill 正文里的 `templates/xxx.md` 引用据此解析）
    - `reference/`  -> `<项目>/reference/`（skill 正文里的 `reference/xxx.md` 引用据此解析；vendored-skills 除外）
+   - `docs/`       -> `<项目>/docs/`（只分发 SHARED_DOCS 白名单里、且被 skill 引用的指南，如 e2e-verify-guide.md；
+                      `docs/issues-log.md` 等项目自有文件不分发，避免覆盖）
    - `AGENTS.md`   -> `<项目>/AGENTS.md`（已存在则跳过，除非加 --force-agents）
+
+   `--install <路径> --check` 对 skill、模板、参考文档、共享指南都按内容哈希比对：
+   文件缺失或与本仓库版本不一致都报错（安装本来就会覆盖这些文件，不一致即安装过旧）。
 
 3. 项目内同步模式（--project <项目路径>）：
    仅在目标项目内部把 `.claude/skills/` 同步到 `.cursor/skills/`。
@@ -41,7 +46,12 @@ ROOT = Path(__file__).resolve().parent.parent
 SRC_SKILLS = ROOT / "skills"
 SRC_TEMPLATES = ROOT / "templates"
 SRC_REFERENCE = ROOT / "reference"
+SRC_DOCS = ROOT / "docs"
 SRC_AGENTS = ROOT / "AGENTS.md"
+
+# docs/ 下由 playbook 维护、需要随安装分发的指南（白名单）。
+# skill 也引用 `docs/issues-log.md` 等项目自有文件，那些不能分发，否则会覆盖项目记录。
+SHARED_DOCS = {"e2e-verify-guide.md"}
 
 # 本仓库内的 skill 副本位置
 PLAYBOOK_TARGETS = [ROOT / ".cursor" / "skills", ROOT / ".claude" / "skills"]
@@ -54,6 +64,8 @@ TEMPLATE_REF_RE = re.compile(r"templates/([\w.-]+\.md)")
 # 匹配 skill 正文中对参考文档的引用，如 `reference/service-refactor-guide.md`
 # 只捕获 reference/ 下直接的 .md 文件名；`reference/vendored-skills/...`（含 /）不匹配
 REFERENCE_REF_RE = re.compile(r"reference/([\w.-]+\.md)")
+# 匹配 skill 正文中对 docs/ 顶层文档的引用，如 `docs/e2e-verify-guide.md`；只有命中 SHARED_DOCS 的才分发
+DOCS_REF_RE = re.compile(r"docs/([\w.-]+\.md)")
 
 
 # ---------- 通用工具 ----------
@@ -107,6 +119,55 @@ def referenced_references(skill_dirs: list[Path]) -> set[str]:
     return names
 
 
+def referenced_shared_docs(skill_dirs: list[Path]) -> set[str]:
+    """扫描 skill 正文，收集被引用、且在 SHARED_DOCS 白名单里的 docs/ 指南。"""
+    names: set[str] = set()
+    for skill in skill_dirs:
+        for md in skill.rglob("*.md"):
+            names.update(DOCS_REF_RE.findall(md.read_text(encoding="utf-8")))
+    return names & SHARED_DOCS
+
+
+def check_dep_files(names: set[str], src_dir: Path, dst_dir: Path, label: str, kind: str) -> bool:
+    """检查依赖文件在目标侧是否存在且与真源内容一致，返回是否有问题。
+
+    src_dir 与 dst_dir 相同（playbook 自检）时只查存在。
+    """
+    absent: list[str] = []
+    stale: list[str] = []
+    same_dir = src_dir.resolve() == dst_dir.resolve()
+    for name in sorted(names):
+        dst_file = dst_dir / name
+        if not dst_file.exists():
+            absent.append(name)
+            continue
+        src_file = src_dir / name
+        if not same_dir and src_file.exists() and file_digest(src_file) != file_digest(dst_file):
+            stale.append(name)
+
+    if absent:
+        print(f"[依赖缺失] {label} 缺少被引用的{kind}：{absent}")
+    if stale:
+        print(f"[内容过旧] {label} 的{kind}与本仓库版本不一致（请重新 --install）：{stale}")
+    return bool(absent or stale)
+
+
+def copy_dep_files(names: set[str], src_dir: Path, dst_dir: Path) -> tuple[int, list[str]]:
+    """把依赖文件从真源复制到目标目录，返回（复制数，真源缺失列表）。"""
+    copied, absent = 0, []
+    if not names:
+        return copied, absent
+    dst_dir.mkdir(parents=True, exist_ok=True)
+    for name in sorted(names):
+        src_file = src_dir / name
+        if src_file.exists():
+            shutil.copy2(src_file, dst_dir / name)
+            copied += 1
+        else:
+            absent.append(name)
+    return copied, absent
+
+
 def compare_skills(src: Path, dst: Path, label: str) -> bool:
     """按内容比对两个 skill 根目录，返回是否存在差异（True = 有差异）。"""
     src_map = {d.name: d for d in iter_skill_dirs(src)}
@@ -131,27 +192,18 @@ def compare_skills(src: Path, dst: Path, label: str) -> bool:
 
 
 def check_template_deps(skill_dirs: list[Path], templates_dir: Path, label: str) -> bool:
-    """检查 skill 引用的模板在目标侧是否存在，返回是否有缺失。"""
-    needed = referenced_templates(skill_dirs)
-    if not needed:
-        return False
-
-    absent = sorted(name for name in needed if not (templates_dir / name).exists())
-    if absent:
-        print(f"[依赖缺失] {label} 缺少被引用的模板：{absent}")
-    return bool(absent)
+    """检查 skill 引用的模板在目标侧是否存在且内容与真源一致。"""
+    return check_dep_files(referenced_templates(skill_dirs), SRC_TEMPLATES, templates_dir, label, "模板")
 
 
 def check_reference_deps(skill_dirs: list[Path], reference_dir: Path, label: str) -> bool:
-    """检查 skill 引用的 reference/ 顶层文档在目标侧是否存在，返回是否有缺失。"""
-    needed = referenced_references(skill_dirs)
-    if not needed:
-        return False
+    """检查 skill 引用的 reference/ 顶层文档在目标侧是否存在且内容与真源一致。"""
+    return check_dep_files(referenced_references(skill_dirs), SRC_REFERENCE, reference_dir, label, "参考文档")
 
-    absent = sorted(name for name in needed if not (reference_dir / name).exists())
-    if absent:
-        print(f"[依赖缺失] {label} 缺少被引用的参考文档：{absent}")
-    return bool(absent)
+
+def check_docs_deps(skill_dirs: list[Path], docs_dir: Path, label: str) -> bool:
+    """检查 skill 引用的共享指南（SHARED_DOCS）在目标侧是否存在且内容与真源一致。"""
+    return check_dep_files(referenced_shared_docs(skill_dirs), SRC_DOCS, docs_dir, label, "共享指南")
 
 
 # session summary 模板必备字段（对齐 observe-session 的标准交接结构与自检）
@@ -224,11 +276,14 @@ def check_playbook() -> int:
     if check_reference_deps(skill_dirs, SRC_REFERENCE, "reference/"):
         need = True
 
+    if check_docs_deps(skill_dirs, SRC_DOCS, "docs/"):
+        need = True
+
     if check_session_summary_fields(SRC_TEMPLATES, "templates/"):
         need = True
 
     if not need:
-        print(f"[一致] {len(skill_dirs)} 个 skill 与模板/参考依赖均已就位")
+        print(f"[一致] {len(skill_dirs)} 个 skill 与模板/参考/共享指南依赖均已就位")
     return 1 if need else 0
 
 
@@ -253,39 +308,31 @@ def install_project(project: Path, force_agents: bool = False) -> int:
         print(f"[完成] {len(skill_dirs)} 个 skill -> {rel.as_posix()}/")
 
     # 2) 模板（skill 正文按 `templates/xxx.md` 引用，必须一并分发）
-    needed = referenced_templates(skill_dirs)
-    dst_templates = project / "templates"
-    dst_templates.mkdir(parents=True, exist_ok=True)
-    copied, absent = 0, []
-    for name in sorted(needed):
-        src_file = SRC_TEMPLATES / name
-        if src_file.exists():
-            shutil.copy2(src_file, dst_templates / name)
-            copied += 1
-        else:
-            absent.append(name)
+    (project / "templates").mkdir(parents=True, exist_ok=True)
+    copied, absent = copy_dep_files(referenced_templates(skill_dirs), SRC_TEMPLATES, project / "templates")
     print(f"[完成] {copied} 个模板 -> templates/")
     if absent:
         print(f"[警告] 真源缺少被引用的模板（请修 playbook）：{absent}")
 
     # 3) 参考文档（skill 正文按 `reference/xxx.md` 引用，如指南；一并分发，vendored-skills 除外）
-    ref_needed = referenced_references(skill_dirs)
-    dst_reference = project / "reference"
-    ref_copied, ref_absent = 0, []
-    if ref_needed:
-        dst_reference.mkdir(parents=True, exist_ok=True)
-        for name in sorted(ref_needed):
-            src_file = SRC_REFERENCE / name
-            if src_file.exists():
-                shutil.copy2(src_file, dst_reference / name)
-                ref_copied += 1
-            else:
-                ref_absent.append(name)
+    ref_copied, ref_absent = copy_dep_files(
+        referenced_references(skill_dirs), SRC_REFERENCE, project / "reference"
+    )
+    if ref_copied or ref_absent:
         print(f"[完成] {ref_copied} 个参考文档 -> reference/")
-        if ref_absent:
-            print(f"[警告] 真源缺少被引用的参考文档（请修 playbook）：{ref_absent}")
+    if ref_absent:
+        print(f"[警告] 真源缺少被引用的参考文档（请修 playbook）：{ref_absent}")
 
-    # 4) AGENTS.md（跨工具入口，默认不覆盖已有文件）
+    # 4) 共享指南（只分发 SHARED_DOCS 白名单里、被 skill 引用的 docs/ 文档）
+    docs_copied, docs_absent = copy_dep_files(
+        referenced_shared_docs(skill_dirs), SRC_DOCS, project / "docs"
+    )
+    if docs_copied or docs_absent:
+        print(f"[完成] {docs_copied} 个共享指南 -> docs/")
+    if docs_absent:
+        print(f"[警告] 真源缺少被引用的共享指南（请修 playbook）：{docs_absent}")
+
+    # 5) AGENTS.md（跨工具入口，默认不覆盖已有文件）
     dst_agents = project / "AGENTS.md"
     if not SRC_AGENTS.exists():
         print("[警告] 本仓库缺少 AGENTS.md，跳过")
@@ -296,11 +343,11 @@ def install_project(project: Path, force_agents: bool = False) -> int:
         print("[完成] AGENTS.md -> 项目根")
 
     print(f"[安装完成] 目标项目：{project}")
-    return 1 if (absent or ref_absent) else 0
+    return 1 if (absent or ref_absent or docs_absent) else 0
 
 
 def check_install(project: Path) -> int:
-    """校验目标项目的安装是否完整（skill 内容 + 模板依赖）。"""
+    """校验目标项目的安装是否完整（skill、模板、参考文档、共享指南均按内容比对）。"""
     skill_dirs = list(iter_skill_dirs(SRC_SKILLS))
     need = False
 
@@ -314,6 +361,9 @@ def check_install(project: Path) -> int:
     if check_reference_deps(skill_dirs, project / "reference", "项目 reference/"):
         need = True
 
+    if check_docs_deps(skill_dirs, project / "docs", "项目 docs/"):
+        need = True
+
     if check_session_summary_fields(project / "templates", "项目 templates/"):
         need = True
 
@@ -321,7 +371,7 @@ def check_install(project: Path) -> int:
         print("[提示] 项目缺少 AGENTS.md（跨工具入口）")
 
     if not need:
-        print(f"[一致] 项目安装完整（{len(skill_dirs)} 个 skill + 模板/参考依赖）")
+        print(f"[一致] 项目安装完整（{len(skill_dirs)} 个 skill + 模板/参考/共享指南，内容与本仓库一致）")
     return 1 if need else 0
 
 
