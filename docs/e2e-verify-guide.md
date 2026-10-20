@@ -20,7 +20,7 @@ E2E = End-to-End（端到端）。从用户操作的入口一路走到出口，�
 - P0 验收项声称「功能不回退」时（**必须**）
 - 修了影响关键路径的 bug 后（验证修复生效）
 - 升级了外部依赖版本后（验证 API 兼容）
-- 何时**不用**：纯 UI 样式调整、文档修改、配置文件变更
+- 何时**不用**：纯 UI 样式调整（不必走业务链路，但仍在产品入口按视口检查，见 `reference/ui-frontend-guide.md`）、文档修改、配置文件变更
 
 ## E2E 骨架流程
 
@@ -105,18 +105,37 @@ assert "expected_output" in result.stdout
 # 使用 Playwright 或 Puppeteer
 from playwright.sync_api import sync_playwright
 
+# 入口是产品构建按部署方式启动后的地址，不是开发服务器或设计预览
+PRODUCT_URL = "http://127.0.0.1:8000/"
+VIEWPORTS = [(1920, 1080), (1366, 768), (390, 844), (390, 420)]
+
 with sync_playwright() as p:
     browser = p.chromium.launch()
     page = browser.new_page()
-    page.goto("http://localhost:3000")
+    try:
+        for width, height in VIEWPORTS:
+            page.set_viewport_size({"width": width, "height": height})
+            page.goto(PRODUCT_URL)
+            # 等应用自己的就绪信号，不用 load / document.complete 代替
+            # 下面的选择器只是示例，换成你应用的就绪信号（如账户入口可点、首屏数据已渲染）
+            page.locator("button.account:not(:disabled)").wait_for()
 
-    # 模拟用户操作
-    page.fill('input[name="search"]', "测试查询")
-    page.click('button[type="submit"]')
+            # 模拟用户操作
+            page.get_by_role("textbox", name="搜索").fill("测试查询")
+            page.get_by_role("button", name="提交").click()
+            page.locator(".result").first.wait_for()
 
-    # 检查结果
-    assert page.locator(".result").count() > 0
+            # 无横向溢出
+            assert page.evaluate(
+                "document.documentElement.scrollWidth <= window.innerWidth"
+            ), f"{width}x{height} 横向溢出"
+            page.screenshot(path=f"e2e-{width}x{height}.png")
+    finally:
+        # 测试登录过的话，在这里用进程内保留的凭据调用退出/撤销接口
+        browser.close()
 ```
+
+视口矩阵、哪些能自动查、测试凭据核销见 `reference/ui-frontend-guide.md`。
 
 ### MCP / SSE 工具链
 
