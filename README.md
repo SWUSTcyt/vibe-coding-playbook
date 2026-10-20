@@ -120,6 +120,7 @@ python scripts/sync-skills.py --project /path/to/your-project
 
 | 版本 | 主要内容 |
 |---|---|
+| [v0.6.0](https://github.com/SWUSTcyt/vibe-coding-playbook/releases/tag/v0.6.0) | 业务 Agent 方案（控制方式/记忆/知识库召回，Spec 冻结前写入同一份 Spec）；UI/前端工作指南（可点击原型、技术方案推荐待确认、真实入口验收、检查运行位置） |
 | [v0.5.0](https://github.com/SWUSTcyt/vibe-coding-playbook/releases/tag/v0.5.0) | 证据合同与 `verify-release`；skills 瘦身与任务三档；有 UI 的使用路径；人读方法论与执行分离（v1.2 归档） |
 | [v0.4.0](https://github.com/SWUSTcyt/vibe-coding-playbook/releases/tag/v0.4.0) | 安装闭环修复（`--install` + 内容哈希校验）+ Spec 治理瘦身（四态生命周期、前置 Spec 地图、可选 AC 追踪、外部写操作授权） |
 | [v0.3.0](https://github.com/SWUSTcyt/vibe-coding-playbook/releases/tag/v0.3.0) | 融入服务化封装与工程骨架管理原则（接口契约前置、关注点剥离重构、密钥/分层/封装边界纪律、可消费性验收，框架无关） |
