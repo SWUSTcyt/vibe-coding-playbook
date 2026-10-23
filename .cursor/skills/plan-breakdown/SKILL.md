@@ -23,9 +23,9 @@ description: 任务归约拆分与验收标准前置。Use when 已有 Spec 或�
 
 1. **拆 Epic** — 先确认依据的 Spec 已是 Frozen；仍是 Draft 就回 plan-spec 定稿。每个 Epic = 一个独立功能模块，先拆当前需要的 2-3 个。**若 plan-spec 已出过 Spec 地图，直接沿用：一份子 Spec 对应一个 Epic**，不要重新划一套边界。
 2. **拆 Milestone** — 选第一个 Epic，拆出 Milestone，每个含：起始条件、交付物、验收标准。只细化前 1-2 个。用 `templates/milestone-template.md`。**有 UI 的产品，每个 Milestone 标注它交付的「用户使用路径增量」**（映射 Spec 的关键路径步骤），让阶段完成后能从用户视角反馈。第一个 Milestone 就交付一条真实走通的路径（真实接口、真实入口），不要先把所有页面做成静态壳再统一接接口；新项目和改版都按路径推进，见 `reference/ui-frontend-guide.md`「交给后续流程」。
-3. **拆 Issue** — 选第一个 Milestone，拆到 Issue 级别。每个 Issue 含：任务描述、输入/输出、依赖条件、P0-P3 验收标准。用 `templates/issue-template.md`。计划只记决策，见下方「计划记决策，不写实现」。
+3. **拆 Issue** — 选第一个 Milestone，拆到 Issue 级别。每个 Issue 含：用户原话、要改/不改、用户确认、任务描述、输入/输出、依赖条件、P0-P3 验收标准。用 `templates/issue-template.md`。计划只记决策，见下方「计划记决策，不写实现」。
 4. **写验收标准（前置）** — 拆 Issue 的同时按 P0-P3 分级写验收标准（见下表），并补上「规格未写、合理用户会踩」的失败。让用户确认/调整。
-5. **停下等确认** — 把拆分交给用户看。用户确认这份拆分之前，不得进入 execute-implement。Spec 已冻结 ≠ 实现计划已被看过。
+5. **停下等确认** — 把拆分交给用户看。用户确认这份拆分之前，不得进入 execute-implement。Spec 已冻结 ≠ 实现计划已被看过。把用户确认的原话和日期记进 Issue；用户对页面的反馈不算确认拆分。
 6. **维护 Plan Document** — 把当前 Milestone 与 Issue 状态写入 `PLAN.md`（≤500 tokens），用 `templates/plan-document-template.md`。PLAN 只挂**活跃**的 Issue 与 Spec 链接；需求全貌与历史在 `docs/spec/`（索引见 `docs/spec/INDEX.md`），不要让 PLAN 承担 Spec 目录职责。
 
 ## Issue 粒度黄金法则

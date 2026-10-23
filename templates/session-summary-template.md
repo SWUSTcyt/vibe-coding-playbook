@@ -12,6 +12,11 @@ date:
 issue_id:
 spec_id:
 scope_changed: false
+tool: ""                  # 开发工具与终端环境，如 Cursor + PowerShell
+models:                   # 每个阶段写档位（高级/普通）+ 型号
+  plan: ""
+  code: ""
+  review: ""
 facts: []                 # 可复核的原始事实（日志/测试/文件:行号/用户明确消息）
 decisions: []             # 负责人/需求方明确拍板的范围或策略
 inferences: []            # 基于事实的推断，不是事实
@@ -42,6 +47,7 @@ next_action:
 - **Review 轮次**:
 - **同一问题反复次数**:
 - **是否摸鱼**: 是 / 否
+- **绕过确认**（写不出已确认 Issue 就改代码 / 事后补 Issue / 自己判断很急）: 次数，分别是哪次
 
 ## 备注
 
