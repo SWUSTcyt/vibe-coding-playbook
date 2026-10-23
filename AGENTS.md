@@ -36,6 +36,8 @@ Plan（规划）→ Execute（执行）→ Verify（验证）→ Observe（观�
 
 - **执行真源**：`skills/`（本文件是调用入口）。启动只读本文件与 `PLAN.md`，按阶段读对应 skill。人读长文是 skills 的导出物，不要打开。
 - **当前运行状态唯一真源**：`PLAN.md`（≤500 tokens），Agent 启动先读。只写当前 Milestone 与活跃 Issue/Spec 链接；需求全貌与历史归 `docs/spec/`（见 `docs/spec/INDEX.md`），不要把 Spec 目录塞进 PLAN。
+- **确认门禁**：改产品代码前要有用户确认过的 Issue，并能写出用户确认的原话；用户的反馈不算确认。只有用户说「很急」才算急，急也要先复述要改什么、测试通过再交付，改完补 Issue 标「补记」。细则见 `skills/execute-implement/SKILL.md`。
+- **合入前审查用高级模型**：可以和写代码的模型不同；当前不是高级模型时先告诉用户。见 `skills/verify-review/SKILL.md`。
 - **验收分级**：P0（阻塞必修）/ P1（本次必修）/ P2（后续 PR）/ P3（可忽略）。
 - **测试三层**：单元（覆盖率 ≥80%）+ 功能（≥1 正常 +1 异常）+ Examples（2-3 个）。
 - **本地/单人**：GitHub Issues/PR/CI 退化为 `PLAN.md` + 本地分支 + 本地测试脚本，质量标准不变。
