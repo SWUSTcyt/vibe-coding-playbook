@@ -22,6 +22,13 @@ description: 可观测性与模型降质检测。Use when 一次开发会话结�
 标准流转：`todo → in-progress（标注 Agent）→ in-review → blocked（标注原因）→ done`。
 本地/单人退化为 `PLAN.md` 表格或编辑器 TODO 列表。
 
+## 进度检查与跨会话衔接
+
+- 完成约定的检查节点、关键依赖到期、实验预算用尽或发生重大变化时，按 plan-breakdown 的「按需展开项目管理」（从当前工具的 skill 目录读取同名 `SKILL.md`）检查结果、证据、阻塞与下一动作；恢复任务时先读所属条目，不把旧摘要当作当前状态。检查可按事件触发，不统一加日报或固定会议。
+- 有延期就核对已知原因 / 预计到位时间、影响及可继续的工作，提出调整选项；无真实回复的日期仍待确认，不自行改写承诺。需要决策时交用户确认（沿用现有确认方式，不新增门禁），未受影响的任务可继续。
+- 先更新所属 Milestone / Issue / 依赖条目，再在摘要的 `external_blockers`、`next_owner`、`next_action` 中引用位置及下次动作 / 检查节点；已关闭事项在原条目记关闭依据，不继续当成新待办。历史摘要保留快照，不复制完整当前台账。
+- 阶段结束时按已有验证规则报告可用结果与仍待外部验收的部分；若做过估算，比较实际与预期并记录等待 / 变化原因，交 improve-retro 判断是否值得沉淀。单次探索结果和模拟验证保留适用范围。
+
 ## Session 摘要
 
 每次会话结束记录（用 `templates/session-summary-template.md`），存入 `docs/session-summaries/`。摘要按结构化字段写，把四类信息分开——**facts（可复核事实）/ decisions（负责人拍板）/ inferences（推断）/ external_blockers（外部待办）**——外加 `issue_id`、`spec_id`、`scope_changed`、`tests`（含 `baseline_sample_size`）、`secrets_or_customer_content_read`、`files_changed`、`commit_or_pr`、`next_owner`、`next_action`。
