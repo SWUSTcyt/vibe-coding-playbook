@@ -40,7 +40,7 @@
 | 阶段 | Skill |
 |---|---|
 | Plan：需求评审 | `skills/plan-spec/SKILL.md` |
-| Plan：拆分 + 验收前置 | `skills/plan-breakdown/SKILL.md` |
+| Plan：拆分 + 验收前置；无 Spec 的个人/实验项目简短规划，交期/依赖/探索结果变化时调整计划 | `skills/plan-breakdown/SKILL.md` |
 | Execute：开发 | `skills/execute-implement/SKILL.md` |
 | Verify：测试 | `skills/verify-test/SKILL.md` |
 | Verify：审查验收 | `skills/verify-review/SKILL.md` |

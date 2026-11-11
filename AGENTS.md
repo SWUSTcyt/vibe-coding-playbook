@@ -24,7 +24,7 @@ Plan（规划）→ Execute（执行）→ Verify（验证）→ Observe（观�
 | 阶段 | Skill | 何时用 |
 |---|---|---|
 | Plan | `plan-spec` | 需求模糊，先澄清产出 Spec |
-| Plan | `plan-breakdown` | 把 Spec 拆成 Epic/Milestone/Issue + P0-P3 验收标准 |
+| Plan | `plan-breakdown` | 把 Spec 拆成 Epic/Milestone/Issue + P0-P3 验收标准；无 Spec 的个人/实验项目简短规划，交期/依赖/探索结果变化时调整计划 |
 | Execute | `execute-implement` | 一个 Issue 进入开发 |
 | Verify | `verify-test` | 写三层测试 / 编码前出测试计划 |
 | Verify | `verify-review` | PR 提交后或提交前自查 |
