@@ -78,7 +78,7 @@ Spec 里有「Agent 方案」时，Issue 和上面这些失败必须能指回其
 
 ## 架构总览（按条件，不是每个项目）
 
-命中 `reference/architecture-visibility-guide.md` 的触发条件时，结构迁移之前先拆一个「地图与边界」Issue：按 `templates/architecture-overview-template.md` 记下当前业务流、职责和禁止边界，再拆搬目录的 Issue。单文件脚本、短期 spike、只改文案或不改职责边界的 Bug 不建总览。已有总览只改受影响的章节，不重建。`PLAN.md` 只挂链接。
+命中 `reference/architecture-visibility-guide.md` 的触发条件时，先判断要不要建架构总览，把做或不做和理由在计划里写一句，交用户确认。要做，就拆一个「地图与边界」Issue：按 `templates/architecture-overview-template.md` 记下当前业务流、职责和禁止边界；同时要搬目录或分层时，这个 Issue 排在迁移 Issue 前面。单文件脚本、短期 spike、只改文案或不改职责边界的 Bug 不建总览。已有总览只改受影响的章节，不重建。`PLAN.md` 只挂链接。
 
 ## P0-P3 验收标准分级
 
