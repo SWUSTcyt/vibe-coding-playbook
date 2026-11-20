@@ -44,8 +44,9 @@ scripts/sync-skills.py               # 把 skills/ 同步到各工具目录（�
 reference/
   SKILL-writing-guide.md             # SKILL.md 写作规范
   service-refactor-guide.md          # 服务化重构参考（契约/分层/关注点剥离）
+  architecture-visibility-guide.md   # 项目架构可见性（多能力或跨目录时按需；不是每个项目都写）
   model-and-connector-guide.md       # 模型/外部服务/连接器（失败关闭、隔离，按需读取）
-  agent-design-guide.md              # 业务 Agent 方案（控制方式/记忆/知识库召回，Spec 冻结前按需读取）
+  agent-design-guide.md              # 业务 Agent 方案（控制方式/记忆/知识库召回/运行边界五问，Spec 冻结前按需读取）
   ui-frontend-guide.md               # UI/前端（原型评审、技术方案推荐、真实入口验收、测试装置与凭据，有界面时按需读取）
   vendored-skills/                   # 第三方参考 skill（gitignore，仅本地借鉴）
 examples/                            # 端到端示例

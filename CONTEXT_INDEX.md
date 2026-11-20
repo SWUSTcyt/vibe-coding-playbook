@@ -15,8 +15,9 @@
 | 跨工具入口（铁律+五层+skill 指引） | `AGENTS.md` |
 | SKILL.md 写作规范 | `reference/SKILL-writing-guide.md` |
 | 服务化重构参考（契约/分层/关注点剥离） | `reference/service-refactor-guide.md` |
+| 项目架构可见性（何时写总览、何时不写；多能力或跨目录时按需） | `reference/architecture-visibility-guide.md` |
 | 模型/外部服务/连接器工程指南（失败关闭/三层不变量/连接器隔离/四层数据） | `reference/model-and-connector-guide.md` |
-| 业务 Agent 方案（控制方式/记忆/知识库召回/工具/用户路径；Spec 冻结前按需） | `reference/agent-design-guide.md` |
+| 业务 Agent 方案（控制方式/记忆/知识库召回/工具/运行边界五问；Spec 冻结前按需） | `reference/agent-design-guide.md` |
 | UI/前端（可点击原型评审/前端技术方案推荐/真实入口视口矩阵/测试装置与凭据；有终端界面时按需，新项目与改版都适用） | `reference/ui-frontend-guide.md` |
 | 参考用第三方 skill | `reference/vendored-skills/`（vendored，仅借鉴） |
 
@@ -28,6 +29,7 @@
 | Spec 索引（全量目录） | `templates/spec-index-template.md` |
 | 轻量计划（<500 tokens） | `templates/plan-document-template.md` |
 | 拆任务 Issue | `templates/issue-template.md` |
+| 项目架构总览（多能力或跨目录时按需） | `templates/architecture-overview-template.md` |
 | Milestone 定义 | `templates/milestone-template.md` |
 | PR 验收摘要 | `templates/pr-summary-template.md` |
 | Session 摘要 | `templates/session-summary-template.md` |
