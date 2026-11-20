@@ -1,6 +1,6 @@
 ---
 name: improve-retro
-description: 问题记录与定期总结提炼。Use when 同一问题反复出现、Milestone 结束、或需要把踩过的坑提炼成可复用规则/新 Skill 时。也适用于定期复盘、更新验收标准或拆分策略、沉淀方法论的场景。
+description: 问题记录与定期总结提炼。Use when 同一问题反复出现、Milestone 结束、或需要把踩过的坑提炼成可复用规则/新 Skill 时。也适用于定期复盘、更新验收标准或拆分策略、沉淀方法论的场景，以及现有 Skill 解决不了某个问题、要找现成外部技能的场景。
 ---
 
 # Improve-Retro：持续改进
@@ -17,6 +17,7 @@ description: 问题记录与定期总结提炼。Use when 同一问题反复出�
 - CI/测试失败且非显而易见原因
 - Review 被退回 ≥ 2 次
 - Milestone 结束 / 每完成 10 个 Issue / 每周固定时间 → 定期总结
+- 问题不在现有 8 个 Skill 的职责里，又反复出现或卡住任务 → 先查有没有现成的外部技能（见下方）
 
 ## 问题自动记录
 
@@ -54,6 +55,16 @@ description: 问题记录与定期总结提炼。Use when 同一问题反复出�
 - **栈特定的坑不进 playbook。** 「某框架某版本的 API 变了」属于项目经验；「重构要按关注点逐个剥离」才是通用规则。
 - 拿不准就问自己：换一个技术栈、换一个项目，这条还成立吗？不成立就别往上提。
 
+## 现有 Skill 解决不了时
+
+出发点仍是现有 8 个 Skill。需求不清、任务太大、没有测试、审查不过，先回到对应的 Skill。两条都满足才往外找：问题不在这 8 个的职责里；已经出现两次以上，或卡住了当前任务。
+
+写新 Skill 之前，先按 `reference/external-skills-guide.md` 查有没有现成的外部技能。
+
+- Agent 只提一个候选，写清它解决什么、会改哪些文件、哪些没验证过。热度只作参考。
+- 用户明确说出在哪个项目装哪一个，才安装。只装进碰到问题的项目，不替换现有 Skill，不整套安装。
+- 试用结果记进项目的 `docs/issues-log.md`。试用改变了实现或测试，才按上面的门槛考虑写回 playbook；一次试用不够。
+
 ## 产出
 
 - `docs/issues-log.md` 问题记录
@@ -76,3 +87,4 @@ description: 问题记录与定期总结提炼。Use when 同一问题反复出�
 - 记录文件：`docs/issues-log.md`、`docs/improvements/CHANGELOG.md`
 - 上一步：`skills/observe-session/SKILL.md`
 - 写 Skill 规范：`reference/SKILL-writing-guide.md`
+- 外部技能查找与试用：`reference/external-skills-guide.md`
