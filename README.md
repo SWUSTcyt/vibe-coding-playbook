@@ -89,6 +89,8 @@ python scripts/sync-skills.py --install /path/to/your-project --check
 
 > 装好后按项目实际情况修改 `AGENTS.md` 的「Skill 调用指引」表格，
 > 如有项目级 Skill（如 `understand`、`feature`），补充到表中。
+>
+> 项目已有 `AGENTS.md` 时，重新安装不会覆盖它。playbook 的 `AGENTS.md`「关键约定」有新增条目时（例如「跟用户说话」），手工把那一条加进项目自己的 `AGENTS.md`。
 
 ### 在项目中使用
 

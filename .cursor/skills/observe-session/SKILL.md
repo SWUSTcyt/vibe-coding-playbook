@@ -9,7 +9,7 @@ description: 可观测性与模型降质检测。Use when 一次开发会话结�
 
 为长期运行建立可观测性：Issue 状态看板、PR Summary、Session 摘要，并基于指标检测模型降质，及时干预。
 
-**核心原则：** 看得见才管得住。降质要靠指标早发现，而不是等结果烂了才察觉。
+**核心原则：** 看得见才管得住。降质要靠指标早发现，而不是等结果烂了才察觉。回复用户时按 `templates/completion-note-template.md`：每一次都讲明白，不限于写摘要，也不限于有界面。
 
 ## 何时使用
 
@@ -43,9 +43,9 @@ description: 可观测性与模型降质检测。Use when 一次开发会话结�
 
 ## PR Summary
 
-每个 PR 末尾附摘要（用 `templates/pr-summary-template.md`）。有 UI 的产品必须含「用户视角（本次让用户能做什么）」一行，别只报「实现了什么技术功能」。
+每个 PR 末尾附摘要（用 `templates/pr-summary-template.md`）。交给用户的回复，和这份摘要里的阶段结果，都按 `templates/completion-note-template.md`。阶段结果写满四段，再写技术收据。原来的「用户视角」写进第 1 段。没有界面也不能省略。讲人话不从这里才开始，每一次回复都适用。
 
-**Milestone/阶段完成时**：除了逐 Issue 的完成情况，输出一段「用户使用路径增量」——从用户视角说清「现在能走通哪条使用路径」，并映射回 Spec 的关键路径步骤（见 plan-spec「用户使用路径与信息架构」），而非空泛描述。无 UI 的项目跳过。
+**Milestone/阶段完成时**：有界面的产品，除了完成说明，再输出一段「用户使用路径增量」——从用户视角说清「现在能走通哪条使用路径」，并映射回 Spec 的关键路径步骤（见 plan-spec「用户使用路径与信息架构」），而非空泛描述。没有界面的阶段不做这段路径增量，完成说明四段仍然要写。
 
 **Milestone/阶段完成时还要更新索引**（项目有 `CONTEXT_INDEX.md` 或同类索引时，没有就不为此新建）：把索引里标「当前」的条目改指本阶段的真源（最终回执、当前 Spec、当前 Milestone），删掉已过时的「当前」说法。被取代的过程文件（旧计划、带 pending 的回执、阶段记录）不改写正文、不删除失败记录，只在首行加「历史快照（截至 YYYY-MM-DD，当前见 <文件>）」。
 
@@ -75,8 +75,9 @@ description: 可观测性与模型降质检测。Use when 一次开发会话结�
 - **模板不在就跳过记录** → 会话记录静默丢失。缺模板走 `template_missing_fallback` 最小结构补记。
 - **阶段结束不更新索引** → 后续 Agent 按 `CONTEXT_INDEX.md` 读到几个阶段前的「当前」，误判状态或多读大量文件。阶段收尾更新「当前」条目，旧文件首行标历史快照。
 - **为消除旧 pending 改写历史回执** → 失败和等待的记录丢了。旧回执原样保留，只加历史快照标签，最终结果写在新回执里。
+- **收工只报合并和检查通过** → 决策人看不懂前因后果，还得追问。完成说明四段在前。没有界面也要写。
 
 ## 参考
 
-- 模板：`templates/session-summary-template.md`、`templates/pr-summary-template.md`
+- 模板：`templates/session-summary-template.md`、`templates/pr-summary-template.md`、`templates/completion-note-template.md`
 - 下一步：`skills/improve-retro/SKILL.md`（把记录提炼成规则/新 skill）

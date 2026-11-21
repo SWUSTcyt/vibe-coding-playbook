@@ -33,6 +33,7 @@
 | 项目架构总览（多能力或跨目录时按需） | `templates/architecture-overview-template.md` |
 | Milestone 定义 | `templates/milestone-template.md` |
 | PR 验收摘要 | `templates/pr-summary-template.md` |
+| 跟用户说话（每一次回复都讲明白；阶段结果写满四段） | `templates/completion-note-template.md` |
 | Session 摘要 | `templates/session-summary-template.md` |
 | 证据合同（P0/P1 结论真源+失败关闭） | `templates/evidence-contract-template.md` |
 | 外部连接器/凭据隔离清单 | `templates/connector-isolation-checklist.md` |
