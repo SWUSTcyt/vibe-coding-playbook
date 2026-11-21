@@ -9,7 +9,7 @@ description: 发布与合并安全门禁。Use when 阶段开发结束、需要 
 
 把「实现完成」到「安全进主干」这一段做成固定验收阶段，而不是靠临时记忆。核心是：**每一步都有明确停止点，宁可停下问，也不误报完成、不误合、不误推。**
 
-**核心原则：** commit / push / 开 PR / merge 是四个独立授权动作（见 execute-implement「外部写操作授权」）；本 skill 负责在获得授权后，把每个动作的安全门禁落到位。
+**核心原则：** commit / push / 开 PR / merge 是四个独立授权动作（见 execute-implement「外部写操作授权」）；本 skill 负责在获得授权后，把每个动作的安全门禁落到位。回复用户时按 `templates/completion-note-template.md`：每一次都讲明白，不限于合并。
 
 ## 何时使用
 
@@ -34,7 +34,7 @@ description: 发布与合并安全门禁。Use when 阶段开发结束、需要 
    任一命中 → 停止修复，不带病提交。
 7. **建 PR（forge-neutral）** — 用当前 forge 的 CLI 或 push 后打印的 URL 建**一个** PR，不硬编码某一家工具。记录 base / head / commit SHA / checks。
 8. **合并门禁** — required checks / required review 未通过**不得合并**。
-9. **合并后回执** — 合并后再读一次 PR 状态与 base 分支 SHA，生成发布记录（PR 号/URL、merge 方式、merge commit/base SHA、合并时间、验证命令）。
+9. **合并后回执** — 合并后再读一次 PR 状态与 base 分支 SHA。合并是阶段结果的一种，回复先写满 `templates/completion-note-template.md` 的四段，再写发布记录（PR 号/URL、merge 方式、merge commit/base SHA、合并时间、验证命令）。技术收据留在四段后面，记录项不删。别的回复也要讲明白，不只有合并才写。
 
 全程对照 `templates/release-safety-checklist.md` 逐项打勾。
 
@@ -68,7 +68,7 @@ description: 发布与合并安全门禁。Use when 阶段开发结束、需要 
 
 - 填好的 `templates/release-safety-checklist.md`
 - 一个 PR（含 base/head/SHA/checks）
-- 合并后发布回执
+- 合并后的完成说明，以及放在它后面的发布回执
 
 ## 常见错误
 
@@ -79,10 +79,11 @@ description: 发布与合并安全门禁。Use when 阶段开发结束、需要 
 - **把「合并成功」当「上线完成」** → 合并只证明代码进远端，不改变产品上线状态。上线以各项目自己的上线门禁为准。
 - **计划当事实回写** → 命令未执行就把发布记录写成完成。回执逐项在动作完成后填。
 - **把人读方法论长文当发布完成条件** → 清单里那一项仅人、可选。Agent 跳过：不打开、不更新该文件。
+- **回执只报已合并和检查通过** → 用户看不出这一步解决什么。完成说明四段在前，发布记录在后。没有界面也不省略。
 
 ## 参考
 
-- 模板：`templates/release-safety-checklist.md`、`templates/pr-summary-template.md`
+- 模板：`templates/release-safety-checklist.md`、`templates/pr-summary-template.md`、`templates/completion-note-template.md`
 - 授权分权：`skills/execute-implement/SKILL.md`「外部写操作授权」
 - 未授权写=P0：`skills/verify-review/SKILL.md`
 - 借鉴：Superpowers `finishing-a-development-branch`（v6.3.0：forge-neutral PR、破坏性操作打字确认、worktree 删除不销毁未跟踪文件）

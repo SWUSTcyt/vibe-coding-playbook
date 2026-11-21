@@ -9,7 +9,7 @@ description: 对照 Issue 与验收标准开发。Use when 一个 Issue 被分�
 
 对照 Issue 和 P0-P3 验收标准写代码，产出必须包含单元测试、功能测试、使用示例，提交前先自查。
 
-**核心原则：** 一次只做一个 Issue，一次做对，不靠反复重试（重试是最大的 token 浪费源）。
+**核心原则：** 一次只做一个 Issue，一次做对，不靠反复重试（重试是最大的 token 浪费源）。回复用户时按 `templates/completion-note-template.md`：每一次都讲明白，不限于做完一块，也不限于有界面。
 
 ## 何时使用
 
@@ -26,7 +26,7 @@ description: 对照 Issue 与验收标准开发。Use when 一个 Issue 被分�
 3. **按 TDD 实现** — 先写失败测试，再写最小实现使其通过，再重构。参考 `reference/vendored-skills/superpowers/skills/test-driven-development`。
 4. **补功能测试 + 使用示例** — 至少 1 正常 + 1 异常；2-3 个实际用法示例。
 5. **提交前自查** — 用 verify-review 对照验收标准逐项自审，再提交 PR/合入。
-6. **写 PR Summary** — 用 `templates/pr-summary-template.md`。
+6. **写 PR Summary 并交给用户** — 摘要用 `templates/pr-summary-template.md`。做完一块是阶段结果，回复写满完成说明四段，再附技术结果。这不是唯一要讲人话的时机。
 
 ## 确认门禁（改产品代码前）
 
@@ -109,10 +109,11 @@ description: 对照 Issue 与验收标准开发。Use when 一个 Issue 被分�
 - **dispatch 未写边界** → 子代理/审查员标准漂移；必须写清 P0/P1 拦截与 P2/P3 建议边界。
 - **密钥写进代码** → 换环境要改代码重新发布，且 key 有泄漏进 git 历史的风险。从第一行代码起就走环境变量。
 - **把「让你改代码」当成「让你发布」** → 擅自 push/merge/发 Release。远程写操作逐项授权，没说就不做。
+- **交结果只报已完成或检查通过** → 用户看不出这一步解决什么，还得追问。先写完成说明四段，技术收据放后面。没有界面也不省略。
 
 ## 参考
 
-- 模板：`templates/pr-summary-template.md`
+- 模板：`templates/pr-summary-template.md`、`templates/completion-note-template.md`
 - 涉及模型/外部服务/连接器：`reference/model-and-connector-guide.md`（失败关闭门禁 + 三层不变量 + 连接器隔离）
 - 配套：`skills/verify-test/SKILL.md`、`skills/verify-review/SKILL.md`
 - 借鉴：`reference/vendored-skills/superpowers/skills/test-driven-development`、`subagent-driven-development`（参考基线：Superpowers v6.0.x；已对照 v6.1.1 做增量优化）
