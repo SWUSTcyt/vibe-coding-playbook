@@ -19,6 +19,7 @@
 | 模型/外部服务/连接器工程指南（失败关闭/三层不变量/连接器隔离/四层数据） | `reference/model-and-connector-guide.md` |
 | 业务 Agent 方案（控制方式/记忆/知识库召回/工具/运行边界五问；Spec 冻结前按需） | `reference/agent-design-guide.md` |
 | UI/前端（可点击原型评审/前端技术方案推荐/真实入口视口矩阵/测试装置与凭据；有终端界面时按需，新项目与改版都适用） | `reference/ui-frontend-guide.md` |
+| 外部技能查找与试用（现有 Skill 解决不了时按需；含候选表） | `reference/external-skills-guide.md` |
 | 参考用第三方 skill | `reference/vendored-skills/`（vendored，仅借鉴） |
 
 ## 模板
@@ -72,5 +73,6 @@
 | 问题自动记录 | `docs/issues-log.md` |
 | Session 摘要 | `docs/session-summaries/` |
 | 改进记录 | `docs/improvements/CHANGELOG.md` |
+| 外部技能：来源仓库判断与试用汇总（只在本仓库） | `docs/plans/2026-11-20-famous-skills-evaluation.md` |
 | E2E 验证指南 | `docs/e2e-verify-guide.md` |
 | 流程 Skill 真源 | `skills/` |

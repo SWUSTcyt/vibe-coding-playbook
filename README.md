@@ -48,6 +48,7 @@ reference/
   model-and-connector-guide.md       # 模型/外部服务/连接器（失败关闭、隔离，按需读取）
   agent-design-guide.md              # 业务 Agent 方案（控制方式/记忆/知识库召回/运行边界五问，Spec 冻结前按需读取）
   ui-frontend-guide.md               # UI/前端（原型评审、技术方案推荐、真实入口验收、测试装置与凭据，有界面时按需读取）
+  external-skills-guide.md           # 外部技能查找与试用（现有 Skill 解决不了时按需读取）
   vendored-skills/                   # 第三方参考 skill（gitignore，仅本地借鉴）
 examples/                            # 端到端示例
 CONTEXT_INDEX.md                     # Agent 信息入口
